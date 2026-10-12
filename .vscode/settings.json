@@ -1,0 +1,11 @@
+{
+    "cmake.configureArgs": [
+        "-DCMAKE_TOOLCHAIN_FILE=${workspaceFolder}/toolchain.cmake"
+    ],
+    "cmake.debugConfig": {
+        "args": [
+            "-p",
+            "${workspaceFolder}/"
+        ]
+    }
+}
