@@ -3,6 +3,7 @@
 //
 
 #include <mutex>
+#include <memory>
 
 //
 
@@ -23,6 +24,6 @@ public:
 
 private:
   /// @brief
-  std::mutex mutex_;
+  mutable std::mutex mutex_;
 
 };

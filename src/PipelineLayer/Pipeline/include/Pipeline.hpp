@@ -15,6 +15,10 @@
 
 #include "YoloEngine.hpp"
 
+#include "DataWriterEngine.hpp"
+
+//
+
 #include "ThreadQueue.hpp"
 
 //
@@ -45,18 +49,24 @@ public:
 
 private:
   /// @brief Поток захвата видео.
-  void videoCaptureWorker(std::stop_token stop_token);
+  void videoCaptureWorker(std::stop_token stopToken);
   /// @brief Поток вывода YOLO.
-  void yoloInferenceWorker(std::stop_token stop_token);
+  void yoloInferenceWorker(std::stop_token stopToken);
+  /// @brief
+  void dataWriterWorker(std::stop_token stopToken);
 
 private:
   /// @brief
   std::unique_ptr<IYoloEngine> yoloEngine_;
+  /// @brief
+  std::unique_ptr<DataWriterEngine> dataWriterEngine_;
 
   /// @brief
-  std::jthread videCaptureThread_;
+  std::jthread videoCaptureThread_;
   /// @brief
   std::jthread yoloInferenceThread_;
+    /// @brief
+  std::jthread dataWriterThread_;
 
   /// @brief
   TheadQueue<FrameData> threadQueue_;

@@ -60,7 +60,7 @@ public:
   /// @brief
   /// @return
   bool run(const FrameData &data) override {
-
+    return {};
   }
 
 private:

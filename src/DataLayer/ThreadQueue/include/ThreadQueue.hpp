@@ -30,7 +30,7 @@ class TheadQueue final {
 public:
   /// @brief Конструктор.
   TheadQueue() = default;
-  /// @breif Деструктор.
+  /// @brief Деструктор.
   ~TheadQueue() = default;
 
   /// @brief
@@ -48,9 +48,9 @@ public:
 
   /// @brief
   /// @param stop_token
-  bool pop(T &data, std::stop_token stop_token) {
+  bool pop(T &data, std::stop_token stopToken) {
     std::unique_lock<std::mutex> lock(mutex_);
-    cv_.wait(lock, stop_token, [this]() -> bool {
+    cv_.wait(lock, stopToken, [this]() -> bool {
       return !queue_.empty();
     });
 
@@ -69,7 +69,7 @@ private:
   /// @brief
   std::queue<T> queue_;
   /// @brief
-  std::condition_variable cv_;
+  std::condition_variable_any cv_;
 
   /// @brief
   const std::size_t max = 16u;

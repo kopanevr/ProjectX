@@ -13,6 +13,7 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Logger/include
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer/YoloEngine/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer/DataWriterEngine/include
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer/Pipeline/include
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/ThreadQueue
@@ -31,17 +32,17 @@ add_custom_command(
 add_custom_command(
   TARGET ProjectX
   POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory_if_different
-          ${CMAKE_SOURCE_DIR}/models
-          ${CMAKE_BINARY_DIR}/models
-  COMMENT "Копирование директории моделей в ${CMAKE_BINARY_DIR}."
+  COMMAND ${CMAKE_COMMAND} -E copy
+          ${CMAKE_BINARY_DIR}/src
+          ${CMAKE_SOURCE_DIR}/bin
+  COMMENT "Копирование исполняемого файла."
 )
 
 add_custom_command(
   TARGET ProjectX
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy
-          ${CMAKE_BINARY_DIR}/
+          ${CMAKE_BINARY_DIR}/thirdParty
           ${CMAKE_SOURCE_DIR}/bin
-  COMMENT "Копирование исполняемого файла."
+  COMMENT "Копирование ."
 )

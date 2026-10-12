@@ -20,20 +20,21 @@ void Pipeline::start(const std::string &yoloModelPath) {
     return;
   }
 
-  videCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
+  videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
   yoloInferenceThread_ = std::jthread(&Pipeline::yoloInferenceWorker, this);
+  dataWriterThread_ = std::jthread(&Pipeline::dataWriterWorker, this);
 }
 
 /// @brief Остановка.
 void Pipeline::stop() {
-  videCaptureThread_.request_stop();
+  videoCaptureThread_.request_stop();
 
   yoloInferenceThread_.request_stop();
 }
 
-/// @brief  Поток захвата видео.
-void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
+/// @brief Поток захвата видео.
+void Pipeline::videoCaptureWorker(std::stop_token stopToken) {
   long long index{};
 
   cv::VideoCapture cap(0);
@@ -45,7 +46,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
     return;
   }
 
-  while(!stop_token.stop_requested()) {
+  while(!stopToken.stop_requested()) {
     cap >> frame;
 
     if (frame.empty()) {
@@ -60,12 +61,17 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
 }
 
 /// @brief Поток вывода YOLO.
-void Pipeline::yoloInferenceWorker(std::stop_token stop_token) {
+void Pipeline::yoloInferenceWorker(std::stop_token stopToken) {
   FrameData data{};
 
-  while(!stop_token.stop_requested()) {
-    if (threadQueue_.pop(data, stop_token)) {
+  while(!stopToken.stop_requested()) {
+    if (threadQueue_.pop(data, stopToken)) {
       yoloEngine_->run(data);
     }
   }
+}
+
+/// @brief Поток.
+void Pipeline::dataWriterWorker(std::stop_token stopToken) {
+
 }
