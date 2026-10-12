@@ -14,24 +14,25 @@
 //
 
 #include "YoloEngine.hpp"
-#include "LlmEngine.hpp"
+
+#include "ThreadQueue.hpp"
 
 //
 
+/// @brief
 class IPepeline {
 protected:
   /// @brief
   const std::string layerName_ = "[Pipeline]";
 
-}
+};
 
 /// @brief
 class Pipeline final : public IPepeline {
 public:
   /// @brief Конструктор.
-  Pipeline(std::unique_ptr<IYoloEngine> yoloEngine, std::unique_ptr<ILlmEngine> llmEngine)
-      : yoloEngine_(std::move(yoloEngine)),
-        llmEngine_(std::move(llmEngine)) {}
+  Pipeline(std::unique_ptr<IYoloEngine> yoloEngine)
+      : yoloEngine_(std::move(yoloEngine)) {}
 
   /// Деструктор.
   ~Pipeline() {
@@ -39,28 +40,25 @@ public:
   }
 
   /// @brief Запуск.
-  void start(const std::string &yoloModelPath, const std::string &llmModelPath);
+  void start(const std::string &yoloModelPath);
   void stop();
 
 private:
-  /// @brief  Поток захвата видео.
-  void videoCaptureWorker();
+  /// @brief Поток захвата видео.
+  void videoCaptureWorker(std::stop_token stop_token);
   /// @brief Поток вывода YOLO.
-  void yoloInferenceWorker();
-  /// @brief Поток вывода LLM.
-  void llmInferenceWorker();
+  void yoloInferenceWorker(std::stop_token stop_token);
 
 private:
   /// @brief
   std::unique_ptr<IYoloEngine> yoloEngine_;
-  /// @brief
-  std::unique_ptr<ILlmEngine> llmEngine_;
 
   /// @brief
   std::jthread videCaptureThread_;
   /// @brief
   std::jthread yoloInferenceThread_;
+
   /// @brief
-  std::jthread llmInferenceThread_;
+  TheadQueue<FrameData> threadQueue_;
 
 };

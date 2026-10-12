@@ -45,6 +45,8 @@ public:
     LOG(layerName_, " ", "Загрузка модели: ", yoloModelPath);
 
     //
+
+    return true;
   }
 
 private:

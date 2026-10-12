@@ -10,8 +10,7 @@
 
 //
 
-#include <YoloEngine.hpp>
-#include <LlmEngine.hpp>
+#include "YoloEngine.hpp"
 
 #include "Pipeline.hpp"
 
@@ -22,9 +21,9 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
-  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<YoloEngine>(new (std::nothrow) YoloEngine()), std::unique_ptr<LlmEngine>(new (std::nothrow) LlmEngine())));
+  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<YoloEngine>(new (std::nothrow) YoloEngine())));
 
   if (pipeline) {
-    pipeline->start("/.onnx", "/.");
+    pipeline->start("modesl/yolo26n.onnx");
   }
 }
