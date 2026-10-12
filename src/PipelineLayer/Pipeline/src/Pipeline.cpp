@@ -36,18 +36,20 @@ void Pipeline::stop() {
 void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
   long long index{};
 
-  cv::VideoCapture videCapture(0);
+  cv::VideoCapture cap(0);
 
   cv::Mat frame;
 
-  if (!videCapture.isOpened()) {
+  if (!cap.isOpened()) {
     ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры.");
     return;
   }
 
   while(!stop_token.stop_requested()) {
+    cap >> frame;
+
     if (frame.empty()) {
-      ERROR(layerName_, " ", "Не удалось ");
+      ERROR(layerName_, " ", "Пустой кадр.");
       continue;
     }
 
@@ -59,7 +61,11 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
 
 /// @brief Поток вывода YOLO.
 void Pipeline::yoloInferenceWorker(std::stop_token stop_token) {
-  while(!stop_token.stop_requested()) {
+  FrameData data{};
 
+  while(!stop_token.stop_requested()) {
+    if (threadQueue_.pop(data, stop_token)) {
+      yoloEngine_->run(data);
+    }
   }
 }

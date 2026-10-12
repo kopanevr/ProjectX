@@ -36,3 +36,12 @@ add_custom_command(
           ${CMAKE_BINARY_DIR}/models
   COMMENT "Копирование директории моделей в ${CMAKE_BINARY_DIR}."
 )
+
+add_custom_command(
+  TARGET ProjectX
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy
+          ${CMAKE_BINARY_DIR}/
+          ${CMAKE_SOURCE_DIR}/bin
+  COMMENT "Копирование исполняемого файла."
+)

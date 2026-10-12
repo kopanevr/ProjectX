@@ -23,6 +23,6 @@ public:
 
 private:
   /// @brief
-  mutable std::mutex mutex_;
+  std::mutex mutex_;
 
 };

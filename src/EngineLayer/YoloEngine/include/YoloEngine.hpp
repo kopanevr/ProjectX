@@ -15,6 +15,10 @@
 
 //
 
+#include "ThreadQueue.hpp"
+
+//
+
 /// @brief
 class IYoloEngine {
 public:
@@ -24,6 +28,10 @@ public:
   /// @brief Инициализация.
   /// @return Результат инициализации.
   virtual bool initialize(const std::string &yoloModelPath) = 0;
+
+  /// @brief
+  /// @return
+  virtual bool run(const FrameData &data) = 0;
 
 protected:
   /// @brief
@@ -41,12 +49,18 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  virtual bool initialize(const std::string &yoloModelPath) override {
+  bool initialize(const std::string &yoloModelPath) override {
     LOG(layerName_, " ", "Загрузка модели: ", yoloModelPath);
 
     //
 
     return true;
+  }
+
+  /// @brief
+  /// @return
+  bool run(const FrameData &data) override {
+
   }
 
 private:
