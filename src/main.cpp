@@ -5,13 +5,13 @@
 
 //
 
+#include <string>
 #include <memory>
 
 //
 
 #include <YoloEngine.hpp>
 #include <LlmEngine.hpp>
-
 
 #include "Pipeline.hpp"
 
@@ -22,9 +22,9 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
-  auto pipeline = std::make_unique<Pipeline>(std::make_unique<YoloEngine>(), std::make_unique<LlmEngine>());
+  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<YoloEngine>(new (std::nothrow) YoloEngine()), std::unique_ptr<LlmEngine>(new (std::nothrow) LlmEngine())));
 
-  yoloModelPath = "";
-
-  pipeline->start();
+  if (pipeline) {
+    pipeline->start("/.onnx", "/.");
+  }
 }

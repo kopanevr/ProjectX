@@ -7,6 +7,14 @@
 
 //
 
+#include <string>
+
+//
+
+#include "Logger.hpp"
+
+//
+
 /// @brief
 class IYoloEngine {
 public:
@@ -15,7 +23,11 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  virtual bool initialize() = 0;
+  virtual bool initialize(const std::string &yoloModelPath) = 0;
+
+protected:
+  /// @brief
+  const std::string layerName_ = "[YOLO Engine]";
 
 private:
 
@@ -29,7 +41,11 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  virtual bool initialize() {}
+  virtual bool initialize(const std::string &yoloModelPath) override {
+    LOG(layerName_, " ", "Загрузка модели: ", yoloModelPath);
+
+    //
+  }
 
 private:
 

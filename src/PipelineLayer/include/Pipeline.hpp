@@ -18,8 +18,15 @@
 
 //
 
+class IPepeline {
+protected:
+  /// @brief
+  const std::string layerName_ = "[Pipeline]";
+
+}
+
 /// @brief
-class Pipeline final {
+class Pipeline final : public IPepeline {
 public:
   /// @brief Конструктор.
   Pipeline(std::unique_ptr<IYoloEngine> yoloEngine, std::unique_ptr<ILlmEngine> llmEngine)
@@ -34,13 +41,26 @@ public:
   /// @brief Запуск.
   void start(const std::string &yoloModelPath, const std::string &llmModelPath);
   void stop();
+
+private:
+  /// @brief  Поток захвата видео.
+  void videoCaptureWorker();
+  /// @brief Поток вывода YOLO.
+  void yoloInferenceWorker();
+  /// @brief Поток вывода LLM.
+  void llmInferenceWorker();
+
 private:
   /// @brief
   std::unique_ptr<IYoloEngine> yoloEngine_;
-  /// brief
+  /// @brief
   std::unique_ptr<ILlmEngine> llmEngine_;
 
   /// @brief
-  std::jthread yoloEngineThread_;
+  std::jthread videCaptureThread_;
+  /// @brief
+  std::jthread yoloInferenceThread_;
+  /// @brief
+  std::jthread llmInferenceThread_;
 
 };

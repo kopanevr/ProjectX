@@ -8,10 +8,11 @@ add_executable(ProjectX ${SOURCES})
 
 target_include_directories(
   ProjectX PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/Logger/include
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer/YoloEngine/include
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer/LlmEngine/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/Pipeline/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer/include
 )
 
 target_link_libraries(
