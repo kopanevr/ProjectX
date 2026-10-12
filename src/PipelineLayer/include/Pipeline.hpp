@@ -7,6 +7,7 @@
 
 //
 
+#include <string>
 #include <memory>
 #include <thread>
 
@@ -30,12 +31,16 @@ public:
     stop();
   }
 
-  void start();
+  /// @brief Запуск.
+  void start(const std::string &yoloModelPath, const std::string &llmModelPath);
   void stop();
 private:
   /// @brief
   std::unique_ptr<IYoloEngine> yoloEngine_;
   /// brief
   std::unique_ptr<ILlmEngine> llmEngine_;
+
+  /// @brief
+  std::jthread yoloEngineThread_;
 
 };
