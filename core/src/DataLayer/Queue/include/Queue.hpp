@@ -13,53 +13,39 @@
 
 //
 
-#include "opencv4/opencv2/opencv.hpp"
-
-//
-
-struct FrameData {
-/// @brief Индекс.
-long long index;
-/// @brief Данные.
-cv::Mat data;
-};
-
 /// @brief
 template<typename T>
-class TheadQueue final {
+class Queue final {
 public:
   /// @brief Конструктор.
-  TheadQueue() = default;
+  Queue() = default;
   /// @brief Деструктор.
-  ~TheadQueue() = default;
+  ~Queue() = default;
 
-  /// @brief
-  /// @param data
+  /// @brief Добавляет элемент.
+  /// @param data Данные.
   void push(T data) {
     std::unique_lock<std::mutex> lock(mutex_);
-
+    // Удаление первого элемента
     if (queue_.size() >= max) {
       queue_.pop();
     }
-
     queue_.push(std::move(data));
     cv_.notify_one();
   }
 
-  /// @brief
-  /// @param stop_token
-  bool pop(T &data, std::stop_token stopToken) {
+  /// @brief Удаляет первый элемент.
+  /// @param stop_token Токен проверки.
+  bool pop(T &data, std::stop_token stop_token) {
     std::unique_lock<std::mutex> lock(mutex_);
-    cv_.wait(lock, stopToken, [this]() -> bool {
+    cv_.wait(lock, stop_token, [this]() -> bool {
       return !queue_.empty();
     });
-
     if (queue_.empty()) {
       return false;
     }
-
     data = std::move(queue_.front());
-
+    queue_.pop();
     return true;
   }
 

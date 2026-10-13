@@ -20,7 +20,6 @@ start_services() {
   TIME=5s
 
   echo "Ожидание $TIME сек..."
-
   sleep $TIME
 
   # 2. C++ Ядро
@@ -68,13 +67,12 @@ check_status() {
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
-        echo -e " $service: \033[0m;32mРАБОТАЕТ\033[0m (PID: $PID)"
+        echo -e " $service: \033[0;32mРАБОТАЕТ\033[0m (PID: $PID)"
       else
-        echo -e " $service: \033[0m;32mУПАЛ\033[0m"
+        echo -e " $service: \033[0;31mУПАЛ\033[0m"
       fi
-      rm -f "$PID_DIR/$service.pid"
     else
-      echo -e " $service: \033[0m;33mНЕ ЗАПУЩЕН\033[0m"
+      echo -e " $service: \033[0;33mНЕ ЗАПУЩЕН\033[0m"
     fi
   done
 }

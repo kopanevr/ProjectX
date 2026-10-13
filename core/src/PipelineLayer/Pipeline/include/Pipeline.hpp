@@ -13,13 +13,16 @@
 
 //
 
-#include "InferenceEngine.hpp"
-
-#include "DataWriterEngine.hpp"
+#include "DatabaseWriter.hpp"
 
 //
 
-#include "ThreadQueue.hpp"
+#include "InferenceEngine.hpp"
+
+//
+
+#include "Data.hpp"
+#include "Queue.hpp"
 
 //
 
@@ -35,10 +38,11 @@ protected:
 class Pipeline final : public IPepeline {
 public:
   /// @brief Конструктор.
-  Pipeline(std::unique_ptr<IInferenceEngine> InferenceEngine)
-      : InferenceEngine_(std::move(InferenceEngine)) {}
+  Pipeline(std::unique_ptr<IInferenceEngine> inferenceEngine, std::unique_ptr<IDatabaseWriter> databaseWriter)
+      : inferenceEngine_(std::move(inferenceEngine)),
+        databaseWriter_(std::move(databaseWriter)) {}
 
-  /// Деструктор.
+  /// @brief Деструктор.
   ~Pipeline() {
     stop();
   }
@@ -49,26 +53,27 @@ public:
 
 private:
   /// @brief Поток захвата видео.
-  void videoCaptureWorker(std::stop_token stopToken);
-  /// @brief Поток вывода YOLO.
-  void inferenceWorker(std::stop_token stopToken);
+  void videoCaptureWorker(std::stop_token stop_token);
+  /// @brief Поток вывода.
+  void inferenceWorker(std::stop_token stop_token);
   /// @brief
-  void dataWriterWorker(std::stop_token stopToken);
+  void databaseWriterWorker(std::stop_token stop_token);
 
 private:
   /// @brief
   std::unique_ptr<IInferenceEngine> inferenceEngine_;
+
   /// @brief
-  std::unique_ptr<DataWriterEngine> dataWriterEngine_;
+  std::unique_ptr<IDatabaseWriter> databaseWriter_;
 
   /// @brief
   std::jthread videoCaptureThread_;
   /// @brief
   std::jthread inferenceThread_;
     /// @brief
-  std::jthread dataWriterThread_;
+  std::jthread databaseWriterThread_;
 
   /// @brief
-  TheadQueue<FrameData> threadQueue_;
+  Queue<FrameData> queue_;
 
 };

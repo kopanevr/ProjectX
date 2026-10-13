@@ -15,7 +15,7 @@
 
 //
 
-#include "ThreadQueue.hpp"
+#include "Data.hpp"
 
 //
 
@@ -27,7 +27,7 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  virtual bool initialize(const std::string &yoloModelPath) = 0;
+  virtual bool initialize(const std::string &modelPath) = 0;
 
   /// @brief
   /// @return
@@ -50,7 +50,7 @@ public:
   /// @brief Инициализация.
   /// @return Результат инициализации.
   bool initialize(const std::string &modelPath) override {
-    LOG(layerName_, " ", "Загрузка модели: ", modelPath);
+    LOG(layerName_, " ", "Загрузка TensorRT модели: ", modelPath);
 
     //
 

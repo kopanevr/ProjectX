@@ -2,6 +2,7 @@
 
 //
 
+#include <iostream>
 #include <mutex>
 #include <memory>
 
@@ -10,7 +11,9 @@
 /// @brief
 class TerminalPrinter final {
 public:
+  /// @brief
   TerminalPrinter() = default;
+  /// @brief
   ~TerminalPrinter() = default;
 
   /// @brief

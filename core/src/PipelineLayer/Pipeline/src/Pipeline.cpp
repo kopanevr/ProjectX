@@ -13,8 +13,7 @@
 /// @brief Запуск.
 /// @param modelPath Путь к модели.
 void Pipeline::start(const std::string &modelPath) {
-  INFO("Запуск конвейера.");
-  if (!inferenceEngine_>initialize(modelPath)) {
+  if (!inferenceEngine_->initialize(modelPath) || databaseWriter_->initialize()) {
     ERROR(layerName_, " ", "Не удалось инициализировать движки.");
     return;
   }
@@ -22,7 +21,7 @@ void Pipeline::start(const std::string &modelPath) {
   videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
   inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
-  dataWriterThread_ = std::jthread(&Pipeline::dataWriterWorker, this);
+  databaseWriterThread_ = std::jthread(&Pipeline::databaseWriterWorker, this);
 }
 
 /// @brief Остановка.
@@ -33,7 +32,7 @@ void Pipeline::stop() {
 }
 
 /// @brief Поток захвата видео.
-void Pipeline::videoCaptureWorker(std::stop_token stopToken) {
+void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
   long long index{};
 
   cv::VideoCapture cap(0);
@@ -45,7 +44,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stopToken) {
     return;
   }
 
-  while(!stopToken.stop_requested()) {
+  while(!stop_token.stop_requested()) {
     cap >> frame;
 
     if (frame.empty()) {
@@ -55,22 +54,22 @@ void Pipeline::videoCaptureWorker(std::stop_token stopToken) {
 
     FrameData data{index++, frame};
 
-    threadQueue_.push(std::move(data));
+    queue_.push(std::move(data));
   }
 }
 
-/// @brief Поток вывода YOLO.
-void Pipeline::yoloInferenceWorker(std::stop_token stopToken) {
+/// @brief Поток вывода.
+void Pipeline::inferenceWorker(std::stop_token stop_token) {
   FrameData data{};
 
-  while(!stopToken.stop_requested()) {
-    if (threadQueue_.pop(data, stopToken)) {
-      yoloEngine_->run(data);
+  while(!stop_token.stop_requested()) {
+    if (queue_.pop(data, stop_token)) {
+      inferenceEngine_->run(data);
     }
   }
 }
 
 /// @brief Поток.
-void Pipeline::dataWriterWorker(std::stop_token stopToken) {
+void Pipeline::databaseWriterWorker(std::stop_token stopToken) {
 
 }

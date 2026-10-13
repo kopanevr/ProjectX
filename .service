@@ -1,0 +1,12 @@
+[Unit]
+Description=Custom Service
+After=
+
+[Service]
+Type=forking
+ExecStart=//run.sh start
+ExecStop=//run.sh stop
+
+User=root
+
+[Install]

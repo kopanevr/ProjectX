@@ -23,17 +23,15 @@ public:
   /// @brief Деструктор.
   ~Logger() = default;
 
-  static Logger *getInstance() {
-    if (!instance_) {
-      instance_.reset(new (std::nothrow) Logger());
-    }
-    return instance_.get();
+  static Logger &getInstance() {
+    static Logger instance{};
+    return instance;
   }
 
   /// @brief
   /// @param args Данные для вывода.
   template <typename... Args> void log(Args &&...args) const {
-    if (!terminalPrinter_) {
+    if (terminalPrinter_) {
       terminalPrinter_->print(std::forward<Args>(args)...);
     }
   }
@@ -52,14 +50,11 @@ private:
 
 private:
   /// @brief
-  static std::unique_ptr<Logger> instance_;
-
-  /// @brief
   std::unique_ptr<TerminalPrinter> terminalPrinter_;
 
 };
 
-#define LOG(...) Logger::getInstance()->log(__VA_ARGS__)
+#define LOG(...) Logger::getInstance().log(__VA_ARGS__)
 
 #if defined(__cplusplus) && __cplusplus >= 202002L
 
