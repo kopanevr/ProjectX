@@ -20,10 +20,10 @@
 //
 
 /// @brief
-class IYoloEngine {
+class IInferenceEngine {
 public:
   /// @brief Деструктор.
-  virtual ~IYoloEngine() = default;
+  virtual ~IInferenceEngine() = default;
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
@@ -35,22 +35,22 @@ public:
 
 protected:
   /// @brief
-  const std::string layerName_ = "[YOLO Engine]";
+  const std::string layerName_ = "[Inference Engine]";
 
 private:
 
 };
 
 /// @brief
-class YoloEngine final : public IYoloEngine {
+class InferenceEngine final : public IInferenceEngine {
 public:
   /// @brief Деструктор.
-  ~YoloEngine() = default;
+  ~InferenceEngine() = default;
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  bool initialize(const std::string &yoloModelPath) override {
-    LOG(layerName_, " ", "Загрузка модели: ", yoloModelPath);
+  bool initialize(const std::string &modelPath) override {
+    LOG(layerName_, " ", "Загрузка модели: ", modelPath);
 
     //
 

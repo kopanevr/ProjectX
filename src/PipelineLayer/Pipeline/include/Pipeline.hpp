@@ -13,7 +13,7 @@
 
 //
 
-#include "YoloEngine.hpp"
+#include "InferenceEngine.hpp"
 
 #include "DataWriterEngine.hpp"
 
@@ -35,8 +35,8 @@ protected:
 class Pipeline final : public IPepeline {
 public:
   /// @brief Конструктор.
-  Pipeline(std::unique_ptr<IYoloEngine> yoloEngine)
-      : yoloEngine_(std::move(yoloEngine)) {}
+  Pipeline(std::unique_ptr<IInferenceEngine> InferenceEngine)
+      : InferenceEngine_(std::move(InferenceEngine)) {}
 
   /// Деструктор.
   ~Pipeline() {
@@ -51,13 +51,13 @@ private:
   /// @brief Поток захвата видео.
   void videoCaptureWorker(std::stop_token stopToken);
   /// @brief Поток вывода YOLO.
-  void yoloInferenceWorker(std::stop_token stopToken);
+  void inferenceWorker(std::stop_token stopToken);
   /// @brief
   void dataWriterWorker(std::stop_token stopToken);
 
 private:
   /// @brief
-  std::unique_ptr<IYoloEngine> yoloEngine_;
+  std::unique_ptr<IInferenceEngine> InferenceEngine_;
   /// @brief
   std::unique_ptr<DataWriterEngine> dataWriterEngine_;
 
