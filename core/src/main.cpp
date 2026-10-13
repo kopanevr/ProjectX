@@ -5,12 +5,13 @@
 
 //
 
-#include <string>
 #include <memory>
 
 //
 
-#include "YoloEngine.hpp"
+#include "InferenceEngine.hpp"
+
+//
 
 #include "Pipeline.hpp"
 
@@ -21,7 +22,7 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
-  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<YoloEngine>(new (std::nothrow) YoloEngine())));
+  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine())));
 
   if (pipeline) {
     pipeline->start("models/yolo26n.onnx");

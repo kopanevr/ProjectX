@@ -7,7 +7,6 @@
 
 //
 
-#include <iostream>
 #include <memory>
 #include <mutex>
 #include <utility>
@@ -18,7 +17,7 @@
 
 //
 
-/// @brief Регистратор событий.
+/// @brief
 class Logger final {
 public:
   /// @brief Деструктор.

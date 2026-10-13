@@ -11,18 +11,17 @@
 //
 
 /// @brief Запуск.
-/// @param yoloModelPath Путь к модели YOLO.
-/// @param llmModelPath Путь к модели LLM.
-void Pipeline::start(const std::string &yoloModelPath) {
+/// @param modelPath Путь к модели.
+void Pipeline::start(const std::string &modelPath) {
   INFO("Запуск конвейера.");
-  if (!yoloEngine_->initialize(yoloModelPath)) {
+  if (!inferenceEngine_>initialize(modelPath)) {
     ERROR(layerName_, " ", "Не удалось инициализировать движки.");
     return;
   }
 
   videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
-  yoloInferenceThread_ = std::jthread(&Pipeline::yoloInferenceWorker, this);
+  inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
   dataWriterThread_ = std::jthread(&Pipeline::dataWriterWorker, this);
 }
 
@@ -30,7 +29,7 @@ void Pipeline::start(const std::string &yoloModelPath) {
 void Pipeline::stop() {
   videoCaptureThread_.request_stop();
 
-  yoloInferenceThread_.request_stop();
+  inferenceThread_.request_stop();
 }
 
 /// @brief Поток захвата видео.

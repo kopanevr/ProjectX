@@ -57,14 +57,14 @@ private:
 
 private:
   /// @brief
-  std::unique_ptr<IInferenceEngine> InferenceEngine_;
+  std::unique_ptr<IInferenceEngine> inferenceEngine_;
   /// @brief
   std::unique_ptr<DataWriterEngine> dataWriterEngine_;
 
   /// @brief
   std::jthread videoCaptureThread_;
   /// @brief
-  std::jthread yoloInferenceThread_;
+  std::jthread inferenceThread_;
     /// @brief
   std::jthread dataWriterThread_;
 
