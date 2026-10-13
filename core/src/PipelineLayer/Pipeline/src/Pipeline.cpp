@@ -21,6 +21,7 @@ void Pipeline::start(const std::string &modelPath) {
   videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
   inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
+
   databaseWriterThread_ = std::jthread(&Pipeline::databaseWriterWorker, this);
 }
 

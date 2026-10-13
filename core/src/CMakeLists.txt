@@ -22,22 +22,17 @@ target_include_directories(
 
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue/include
+
+  ${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-Linux-x86_64-cuda-13.4-Release-external/TensorRT-11.4.0.106/include
 )
 
-target_link_libraries(core PUBLIC ${OpenCV_LIBS})
+target_link_libraries(core PRIVATE ${OpenCV_LIBS})
+
+target_link_libraries(core PRIVATE ${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-Linux-x86_64-cuda-13.4-Release-external/TensorRT-11.4.0.106/lib/stubs/libnvinfer.so)
 
 add_custom_command(
   TARGET core
   POST_BUILD
   COMMAND size core --format=gnu
   COMMENT "Размеры секций:"
-)
-
-add_custom_command(
-  TARGET core
-  POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy
-          ${CMAKE_BINARY_DIR}/src
-          ${CMAKE_SOURCE_DIR}/bin
-  COMMENT "Копирование исполняемого файла."
 )
