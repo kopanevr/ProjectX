@@ -4,6 +4,9 @@ file(
   ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
 
+# Определение путей к TensorRT
+set(TENSORRT_DIR "${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-Linux-x86_64-cuda-13.4-Release-external/TensorRT-11.4.0.106")
+
 add_executable(core ${SOURCES})
 
 find_package(OpenCV 4 REQUIRED)
@@ -23,12 +26,13 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue/include
 
-  ${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-Linux-x86_64-cuda-13.4-Release-external/TensorRT-11.4.0.106/include
+  ${TENSORRT_DIR}/include
 )
 
-target_link_libraries(core PRIVATE ${OpenCV_LIBS})
-
-target_link_libraries(core PRIVATE ${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-Linux-x86_64-cuda-13.4-Release-external/TensorRT-11.4.0.106/lib/stubs/libnvinfer.so)
+target_link_libraries(core PRIVATE
+  ${OpenCV_LIBS}
+  ${TENSORRT_DIR}/lib/libnvinfer.so
+)
 
 add_custom_command(
   TARGET core
