@@ -8,6 +8,7 @@
 //
 
 #include <string>
+#include <vector>
 
 //
 
@@ -69,7 +70,7 @@ public:
 
   /// @brief
   /// @return
-  bool run(const FrameData &data) override;
+  std::vectro<> run(const FrameData &data) override;
 
 private:
   /// @brief Загрузка движка.
@@ -79,6 +80,8 @@ private:
   bool createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine);
   /// @brief Выделение памяти на GPU.
   bool allocateBuffers();
+  /// @brief Освобождение памяти  на GPU.
+  void freeBuffers();
 
 private:
   /// @brief
@@ -105,3 +108,15 @@ private:
   void *deviceOutput_{nullptr};
 
 };
+
+/// @brief Освобождение памяти  на GPU.
+inline void InferenceEngine::freeBuffers() {
+  if (deviceInput_) {
+    cudaFree(deviceInput_);
+    deviceInput_ = nullptr;
+  }
+  if (deviceOutput_) {
+    cudaFree(deviceOutput_);
+    deviceOutput_ = nullptr;
+  }
+}

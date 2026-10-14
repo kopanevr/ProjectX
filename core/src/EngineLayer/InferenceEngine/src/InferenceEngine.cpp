@@ -8,7 +8,7 @@
 
 //
 
-#include <cuda_device_runtime_api.h>
+#include <cuda_runtime.h>
 
 //
 
@@ -44,7 +44,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 
 /// @brief
 /// @return
-bool InferenceEngine::run(const FrameData &data) {
+std::vector<> InferenceEngine::run(const FrameData &data) {
 }
 
 /// @brief Загрузка движка.
