@@ -27,8 +27,14 @@
 /// @return
 int main(int argc, char *argv[]) {
   auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()), std::unique_ptr<DatabaseWriter>(new (std::nothrow) DatabaseWriter())));
-
-  if (pipeline) {
-    pipeline->start("models/yolo26n.onnx");
+  if (!pipeline) {
+    return;
   }
+
+  pipeline->start("models/model.engine");
+
+  while (true) {
+  }
+
+  pipeline->stop();
 }

@@ -1,12 +1,13 @@
 [Unit]
 Description=Custom Service
-After=
+After=network.target
 
 [Service]
 Type=forking
-ExecStart=//run.sh start
-ExecStop=//run.sh stop
-
+ExecStart=/opt/project/run.sh start
+ExecStop=/opt/project/run.sh stop
+RemainAfterExit=yes
 User=root
 
 [Install]
+WantedBy=multi-user.target
