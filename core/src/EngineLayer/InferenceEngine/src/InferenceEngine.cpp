@@ -40,7 +40,7 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
 
   file.seekg(0, std::ios::end);
   const auto size = file.tellg();
-  LOG(layerName_, " ", "Размер файла движка: ", size);
+  LOG(layerName_, " ", "Размер файла движка: ", size, " байт.");
   file.seekg(0, std::ios::beg);
 
   std::vector<char> buffer(size);
