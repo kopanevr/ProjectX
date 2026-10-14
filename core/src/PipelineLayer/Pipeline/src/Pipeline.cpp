@@ -12,10 +12,10 @@
 
 /// @brief Запуск.
 /// @param modelPath Путь к модели.
-void Pipeline::start(const std::string &modelPath) {
+bool Pipeline::start(const std::string &modelPath) {
   if (!inferenceEngine_->initialize(modelPath) || databaseWriter_->initialize()) {
     ERROR(layerName_, " ", "Не удалось инициализировать движки.");
-    return;
+    return false;
   }
 
   videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
@@ -23,6 +23,8 @@ void Pipeline::start(const std::string &modelPath) {
   inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
 
   databaseWriterThread_ = std::jthread(&Pipeline::databaseWriterWorker, this);
+
+  return true;
 }
 
 /// @brief Остановка.
@@ -70,7 +72,7 @@ void Pipeline::inferenceWorker(std::stop_token stop_token) {
   }
 }
 
-/// @brief Поток.
+/// @brief Поток записи в базу данных.
 void Pipeline::databaseWriterWorker(std::stop_token stopToken) {
 
 }

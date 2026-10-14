@@ -27,7 +27,7 @@
 //
 
 /// @brief
-class IPepeline {
+class IPipeline {
 protected:
   /// @brief
   const std::string layerName_ = "[Pipeline]";
@@ -35,7 +35,7 @@ protected:
 };
 
 /// @brief
-class Pipeline final : public IPepeline {
+class Pipeline final : public IPipeline {
 public:
   /// @brief Конструктор.
   Pipeline(std::unique_ptr<IInferenceEngine> inferenceEngine, std::unique_ptr<IDatabaseWriter> databaseWriter)
@@ -48,7 +48,8 @@ public:
   }
 
   /// @brief Запуск.
-  void start(const std::string &yoloModelPath);
+  bool start(const std::string &yoloModelPath);
+  /// @brief Останова.
   void stop();
 
 private:
@@ -56,7 +57,7 @@ private:
   void videoCaptureWorker(std::stop_token stop_token);
   /// @brief Поток вывода.
   void inferenceWorker(std::stop_token stop_token);
-  /// @brief
+  /// @brief Поток записи в базу данных.
   void databaseWriterWorker(std::stop_token stop_token);
 
 private:

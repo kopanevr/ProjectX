@@ -11,13 +11,25 @@
 
 //
 
+#include "Data.hpp"
+
+//
+
 #include "Logger.hpp"
 
 //
 
-#include "Data.hpp"
+#include "NvInfer.h"
 
 //
+
+/// @brief
+class InferenceLogger : public nvinfer1::ILogger {
+public:
+  void log(Severity severity, nvinfer1::AsciiChar const *msg) noexcept override {
+    //
+  }
+};
 
 /// @brief
 class IInferenceEngine {
@@ -27,7 +39,7 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  virtual bool initialize(const std::string &modelPath) = 0;
+  virtual bool initialize(const std::string &fileName) = 0;
 
   /// @brief
   /// @return
@@ -49,20 +61,23 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  bool initialize(const std::string &modelPath) override {
-    LOG(layerName_, " ", "Загрузка TensorRT модели: ", modelPath);
-
-    //
-
-    return true;
-  }
+  bool initialize(const std::string &fileName) override;
 
   /// @brief
   /// @return
-  bool run(const FrameData &data) override {
-    return {};
-  }
+  bool run(const FrameData &data) override;
 
 private:
+  /// @brief Загрузка движка.
+  /// @param fileName
+  std::shared_ptr<nvinfer1::ICudaEngine> loadEngine(const std::string &fileName);
+
+
+private:
+  /// @brief
+  InferenceLogger inferenceLogger_;
+
+  /// @brief
+  std::unique_ptr<nvinfer1::IRuntime> runtime_;
 
 };

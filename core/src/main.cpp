@@ -5,6 +5,10 @@
 
 //
 
+#include <cstdlib>
+
+//
+
 #include <memory>
 
 //
@@ -28,13 +32,18 @@
 int main(int argc, char *argv[]) {
   auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()), std::unique_ptr<DatabaseWriter>(new (std::nothrow) DatabaseWriter())));
   if (!pipeline) {
-    return;
+    return EXIT_FAILURE;
   }
 
-  pipeline->start("models/model.engine");
+  // Запуск конвейера.
+  if (pipeline->start("models/model.engine")) {
+    return EXIT_FAILURE;
+  }
 
   while (true) {
+    //
   }
 
+  // Остановка конвейера.
   pipeline->stop();
 }
