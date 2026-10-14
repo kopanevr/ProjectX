@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Запуск конвейера.
-  if (pipeline->start("models/model.engine", "input", "output")) {
+  if (pipeline->start("models/model.engine", "images", "output0")) {
     return EXIT_FAILURE;
   }
 

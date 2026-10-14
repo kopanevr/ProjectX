@@ -26,7 +26,7 @@ public:
   /// @param data Данные.
   void push(T data) {
     std::unique_lock<std::mutex> lock(mutex_);
-    // Удаление первого элемента
+    // Удаление первого элемента.
     if (queue_.size() >= max) {
       queue_.pop();
     }
