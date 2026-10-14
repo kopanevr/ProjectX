@@ -71,7 +71,8 @@ private:
   /// @brief Загрузка движка.
   /// @param fileName
   std::shared_ptr<nvinfer1::ICudaEngine> loadEngine(const std::string &fileName);
-
+  /// @brief
+  bool createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine);
 
 private:
   /// @brief
@@ -79,5 +80,7 @@ private:
 
   /// @brief
   std::unique_ptr<nvinfer1::IRuntime> runtime_;
+  /// @brief
+  std::unique_ptr<nvinfer1::IExecutionContext> executionContext_;
 
 };

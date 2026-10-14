@@ -13,10 +13,12 @@
 /// @brief Запуск.
 /// @param modelPath Путь к модели.
 bool Pipeline::start(const std::string &modelPath) {
+  INFO(layerName_, " ", "Инициализация...");
   if (!inferenceEngine_->initialize(modelPath) || databaseWriter_->initialize()) {
-    ERROR(layerName_, " ", "Не удалось инициализировать движки.");
     return false;
   }
+
+  INFO(layerName_, " ", "Инициализация успешно завершена!");
 
   videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 

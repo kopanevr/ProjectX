@@ -20,6 +20,13 @@ bool InferenceEngine::initialize(const std::string &fileName) {
     return false;
   }
 
+  // Создание контекста.
+  if (!createExecutionContext(engine)) {
+    ERROR(layerName_, " ", "Не удалось создать контекст.");
+    return false;
+  }
+
+
   return true;
 }
 
@@ -66,4 +73,17 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
   LOG(layerName_, " ", "Десериализиация движка успешно завершена!", fileName);
 
   return std::shared_ptr<nvinfer1::ICudaEngine>(rawEngine);
+}
+
+/// @brief
+/// @param engine
+bool InferenceEngine::createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine) {
+  const auto rawExecutionContext = engine->createExecutionContext();
+  if (!rawExecutionContext ) {
+    return false;
+  }
+
+  executionContext_= std::unique_ptr<nvinfer1::IExecutionContext>(engine->createExecutionContext());
+
+  return true;
 }
