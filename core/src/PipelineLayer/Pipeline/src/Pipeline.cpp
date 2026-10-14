@@ -11,10 +11,10 @@
 //
 
 /// @brief Запуск.
-/// @param modelPath Путь к модели.
-bool Pipeline::start(const std::string &modelPath) {
+/// @param filePath Путь к файлу.
+bool Pipeline::start(const std::string &filePath, const std::string &inputName, const std::string &outputName) {
   INFO(layerName_, " ", "Инициализация...");
-  if (!inferenceEngine_->initialize(modelPath) || databaseWriter_->initialize()) {
+  if (!inferenceEngine_->initialize(filePath, inputName, outputName) || databaseWriter_->initialize()) {
     return false;
   }
 

@@ -38,8 +38,10 @@ public:
   virtual ~IInferenceEngine() = default;
 
   /// @brief Инициализация.
+  /// @param inputName
+  /// @param outputName
   /// @return Результат инициализации.
-  virtual bool initialize(const std::string &fileName) = 0;
+  virtual bool initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) = 0;
 
   /// @brief
   /// @return
@@ -61,7 +63,9 @@ public:
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
-  bool initialize(const std::string &fileName) override;
+  /// @param inputName
+  /// @param outputName
+  bool initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) override;
 
   /// @brief
   /// @return
@@ -73,6 +77,8 @@ private:
   std::shared_ptr<nvinfer1::ICudaEngine> loadEngine(const std::string &fileName);
   /// @brief
   bool createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine);
+  /// @brief Выделение памяти на GPU.
+  bool allocateBuffers();
 
 private:
   /// @brief
@@ -82,5 +88,20 @@ private:
   std::unique_ptr<nvinfer1::IRuntime> runtime_;
   /// @brief
   std::unique_ptr<nvinfer1::IExecutionContext> executionContext_;
+
+  /// @brief
+  std::string inputName_;
+  /// @brief
+  std::string outputName_;
+
+  /// @brief Размер входа в байт.
+  size_t inputSizeBytes_;
+  /// @brief Размер выхода в байт.
+  size_t outputSizeBytes_;
+
+  /// @brief
+  void *deviceInput_{nullptr};
+  /// @brief
+  void *deviceOutput_{nullptr};
 
 };

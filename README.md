@@ -13,6 +13,13 @@
 
 **Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods) project.**
 
-##
+## Зависимости
+
+Для сборки и запуска проекта:
+
+* **Компилятор C++:** C++20 или выше.
+* **OpenCV:** Для захвата видео (Версия 4).
+* **Система сборки:** CMake (Версия 3.10).
+
 
 ##

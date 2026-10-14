@@ -48,7 +48,8 @@ public:
   }
 
   /// @brief Запуск.
-  bool start(const std::string &yoloModelPath);
+  /// @param filePath Путь к файлу.
+  bool start(const std::string &filePath, const std::string &inputName, const std::string &outputName);
   /// @brief Останова.
   void stop();
 

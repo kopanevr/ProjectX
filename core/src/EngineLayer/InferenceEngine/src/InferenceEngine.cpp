@@ -8,11 +8,19 @@
 
 //
 
+#include <cuda_device_runtime_api.h>
+
+//
+
 /// @brief Инициализация.
 /// @param fileName
 /// @return Результат инициализации.
-bool InferenceEngine::initialize(const std::string &fileName) {
+bool InferenceEngine::initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) {
   LOG(layerName_, " ", "Загрузка TensorRT движка: ", fileName);
+
+  LOG(layerName_, " ", "Имя входа: ", inputName_ = inputName);
+  LOG(layerName_, " ", "Имя выхода: ", outputName_ = outputName);
+
   // Загрузка движка.
   auto engine = loadEngine(fileName);
   if (engine) {
@@ -26,6 +34,10 @@ bool InferenceEngine::initialize(const std::string &fileName) {
     return false;
   }
 
+  if (!allocateBuffers()) {
+    ERROR(layerName_, " ", "Не удалось выделить память на GPU.");
+    return false;
+  }
 
   return true;
 }
@@ -84,6 +96,50 @@ bool InferenceEngine::createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngi
   }
 
   executionContext_= std::unique_ptr<nvinfer1::IExecutionContext>(engine->createExecutionContext());
+
+  return true;
+}
+
+/// @brief Выделение памяти на GPU.
+/// @return
+bool InferenceEngine::allocateBuffers() {
+  LOG(layerName_, " ", "Выделение памяти на GPU...");
+
+  nvinfer1::Dims4 inputDims{1, 3, 640, 640};
+  if (!executionContext_->setInputShape(inputName_.c_str(), inputDims)) {
+    return false;
+  }
+
+  inputSizeBytes_ = 1 * 3 * 640 * 640 * sizeof(float);
+  LOG(layerName_, " ", "Размер входа: ", inputSizeBytes_, " байт.");
+
+  if (cudaMalloc(&deviceInput_, inputSizeBytes_) != cudaSuccess) {
+    return false;
+  }
+
+  // Установка адреса входа.
+  if (executionContext_->setTensorAddress(inputName_.c_str(), deviceInput_)) {
+    return false;
+  }
+
+  nvinfer1::Dims outputDims = executionContext_->getTensorShape(inputName_.c_str());
+
+  outputSizeBytes_ = 1;
+  for (int i = 0; i < outputDims.nbDims; ++i) {
+    outputSizeBytes_ *= outputDims.d[i];
+  }
+  LOG(layerName_, " ", "Размер выхода: ", outputSizeBytes_, " байт.");
+
+  if (cudaMalloc(&deviceOutput_, outputSizeBytes_) != cudaSuccess) {
+    return false;
+  }
+
+  // Установка адреса выхода.
+  if (executionContext_->setTensorAddress(outputName_.c_str(), deviceOutput_)) {
+    return false;
+  }
+
+  LOG(layerName_, " ", "Выделение памяти на GPU успешно завершено!");
 
   return true;
 }
