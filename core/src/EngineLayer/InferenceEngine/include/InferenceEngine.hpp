@@ -76,7 +76,7 @@ public:
   /// @param outputName
   bool initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) override;
 
-  /// @brief
+  /// @brief Вывод.
   /// @return
   std::vector<BoundingBox> run(const FrameData &data) override;
 
@@ -116,7 +116,7 @@ private:
   void *deviceOutput_{nullptr};
 
   /// @brief
-  size_t numElements_
+  size_t numElements_;
 
 };
 

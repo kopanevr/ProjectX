@@ -70,6 +70,10 @@ void Pipeline::inferenceWorker(std::stop_token stop_token) {
   while(!stop_token.stop_requested()) {
     if (queue_.pop(data, stop_token)) {
       inferenceEngine_->run(data);
+
+#if (1)
+      INFO(layerName_, " ");
+#endif
     }
   }
 }

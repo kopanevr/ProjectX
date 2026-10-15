@@ -44,22 +44,33 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
   return true;
 }
 
-/// @brief
+/// @brief Вывод.
 /// @return
 std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
+  cudaStream_t cudaStream{};
+  if (cudaStreamCreate(&cudaStream) != cudaSuccess) {
+    return {};
+  }
+
   // Копирование данных.
   if (cudaMemcpyAsync(
     deviceInput_,
     data.data.data,
     inputSizeBytes_,
-    cudaMemcpyHostToDevice
+    cudaMemcpyHostToDevice,
+    cudaStream
   ) != cudaSuccess) {
+    cudaStreamDestroy(cudaStream);
     return {};
   }
 
-  executionContext_->enqueueV3({});
+  // Запуск.
+  if (!executionContext_->enqueueV3(cudaStream)) {
+    cudaStreamDestroy(cudaStream);
+    return {};
+  }
 
-  // Выделение памяти.
+  // Выделение памяти на CPU.
   std::vector<BoundingBox> boxes(numElements_);
 
   // Копирование данных.
@@ -67,10 +78,17 @@ std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
     deviceOutput_,
     boxes.data(),
     outputSizeBytes_,
-    cudaMemcpyDeviceToHost
+    cudaMemcpyDeviceToHost,
+    cudaStream
   ) != cudaSuccess) {
+    cudaStreamDestroy(cudaStream);
     return {};
   }
+
+  // Ожидание завершения.
+  cudaStreamSynchronize(cudaStream);
+
+  cudaStreamDestroy(cudaStream);
 
   return boxes;
 }
