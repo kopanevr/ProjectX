@@ -9,11 +9,11 @@ start_services() {
 
   # 1. LLama.cpp
   if [ -f "/" ]; then
-    echo "[1/3] Запуск llama-server..."
+    echo "[1/2] Запуск llama-server..."
     /llama-server -m
     echo $! > "$PID_DIR/llama.pid"
   else
-    echo "Ошибка: llama-server не найден"
+    echo "Ошибка: llama-server не найден."
     exit 1
   fi
 
@@ -24,20 +24,11 @@ start_services() {
 
   # 2. C++ Ядро
   if [ -f "$BASE_DIR/bin/core.elf" ]; then
-    echo "[2/3] Запуск С++ ядра..."
+    echo "[2/2] Запуск С++ ядра..."
     cd "$BASE_DIR" && ./bin/core.elf
     echo $! > "$PID_DIR/core.pid"
   else
-    echo "Ошибка: Core ELF не найден"
-    exit 1
-  fi
-
-  # 3. Веб
-  if [ -d "$BASE_DIR/web" ]; then
-    echo "[3/3] Запуск Веб-сервера (Порт 80)..."
-    echo $! > "$PID_DIR/web.pid"
-  else
-    echo "Ошибка: Папка web не найдена"
+    echo "Ошибка: Core ELF не найден."
     exit 1
   fi
 
@@ -47,7 +38,7 @@ start_services() {
 stop_services() {
   echo "=== Остановка системы ==="
 
-  for service in web core llama; do
+  for service in core llama; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
@@ -63,16 +54,16 @@ stop_services() {
 check_status() {
   echo "=== Статус ==="
 
-  for service in web core llama; do
+  for service in core llama; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
-        echo -e " $service: \033[0;32mРАБОТАЕТ\033[0m (PID: $PID)"
+        echo -e " $service: \033[0;32mРАБОТАЕТ\033[0m (PID: $PID)" # Зелёный
       else
-        echo -e " $service: \033[0;31mУПАЛ\033[0m"
+        echo -e " $service: \033[0;31mУПАЛ\033[0m" # Красный
       fi
     else
-      echo -e " $service: \033[0;33mНЕ ЗАПУЩЕН\033[0m"
+      echo -e " $service: \033[0;33mНЕ ЗАПУЩЕН\033[0m" # Жёлтый
     fi
   done
 }

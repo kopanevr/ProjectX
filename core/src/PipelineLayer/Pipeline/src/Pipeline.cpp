@@ -29,6 +29,21 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
   return true;
 }
 
+/// @brief Процесс.
+bool Pipeline::process() {
+  FrameData data{};
+
+  if (getFrameForDisplay(data)) {
+    cv::imshow("", data.data);
+  }
+
+  if (cv::waitKey(1) == 113) { // q
+    return false;
+  }
+
+  return true;
+}
+
 /// @brief Остановка.
 void Pipeline::stop() {
   videoCaptureThread_.request_stop();
@@ -69,16 +84,14 @@ void Pipeline::inferenceWorker(std::stop_token stop_token) {
 
   while(!stop_token.stop_requested()) {
     if (queue_.pop(data, stop_token)) {
-      inferenceEngine_->run(data);
-
-#if (1)
-      INFO(layerName_, " ");
-#endif
+      if (inferenceEngine_->run(data)) {
+        displayQueue_.push(std::move(data));
+      }
     }
   }
 }
 
 /// @brief Поток записи в базу данных.
 void Pipeline::databaseWriterWorker(std::stop_token stopToken) {
-
+  //
 }

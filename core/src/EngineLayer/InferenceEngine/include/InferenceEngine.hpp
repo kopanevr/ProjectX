@@ -46,15 +46,15 @@ public:
   /// @brief Деструктор.
   virtual ~IInferenceEngine() = default;
 
-  /// @brief Инициализация.
-  /// @param inputName
-  /// @param outputName
+  /// @param fileName Имя файла.
+  /// @param inputName Имя входа.
+  /// @param outputName Имя выхода.
   /// @return Результат инициализации.
   virtual bool initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) = 0;
 
   /// @brief
   /// @return
-  virtual std::vector<BoundingBox> run(const FrameData &data) = 0;
+  virtual bool run(const FrameData &data) = 0;
 
 protected:
   /// @brief
@@ -70,15 +70,15 @@ public:
   /// @brief Деструктор.
   ~InferenceEngine() = default;
 
-  /// @brief Инициализация.
+  /// @param fileName Имя файла.
+  /// @param inputName Имя входа.
+  /// @param outputName Имя выхода.
   /// @return Результат инициализации.
-  /// @param inputName
-  /// @param outputName
   bool initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) override;
 
   /// @brief Вывод.
   /// @return
-  std::vector<BoundingBox> run(const FrameData &data) override;
+  bool run(const FrameData &data) override;
 
 private:
   /// @brief Загрузка движка.
@@ -86,7 +86,7 @@ private:
   std::shared_ptr<nvinfer1::ICudaEngine> loadEngine(const std::string &fileName);
   /// @brief
   bool createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine);
-  /// @brief Выделение памяти на GPU.
+  /// @brief Выделение памяти на CPU и GPU.
   bool allocateBuffers();
   /// @brief Освобождение памяти  на GPU.
   void freeBuffers();
@@ -117,6 +117,9 @@ private:
 
   /// @brief
   size_t numElements_;
+
+  /// @brief
+  std::vector<BoundingBox> boxes_;
 
 };
 

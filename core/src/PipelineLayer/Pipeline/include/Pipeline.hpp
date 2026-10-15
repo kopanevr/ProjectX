@@ -50,8 +50,17 @@ public:
   /// @brief Запуск.
   /// @param filePath Путь к файлу.
   bool start(const std::string &filePath, const std::string &inputName, const std::string &outputName);
+  /// @brief Процесс.
+  /// @return
+  bool process();
   /// @brief Останова.
   void stop();
+
+  /// @brief
+  /// @return
+  bool getFrameForDisplay(FrameData &data) {
+    return displayQueue_.pop(, data);
+  }
 
 private:
   /// @brief Поток захвата видео.
@@ -77,5 +86,7 @@ private:
 
   /// @brief
   Queue<FrameData> queue_;
+  /// @brief
+  Queue<FrameData> displayQueue_;
 
 };

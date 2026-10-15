@@ -41,7 +41,9 @@ int main(int argc, char *argv[]) {
   }
 
   while (true) {
-    //
+    if (!pipeline->process()) {
+      break;
+    }
   }
 
   // Остановка конвейера.

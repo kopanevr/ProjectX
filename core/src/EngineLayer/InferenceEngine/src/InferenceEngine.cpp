@@ -36,6 +36,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
     return false;
   }
 
+  // Выделение памяти на GPU.
   if (!allocateBuffers()) {
     ERROR(layerName_, " ", "Не удалось выделить память на GPU.");
     return false;
@@ -46,10 +47,10 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 
 /// @brief Вывод.
 /// @return
-std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
+bool InferenceEngine::run(const FrameData &data) {
   cudaStream_t cudaStream{};
   if (cudaStreamCreate(&cudaStream) != cudaSuccess) {
-    return {};
+    return false;
   }
 
   // Копирование данных.
@@ -61,28 +62,25 @@ std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
     cudaStream
   ) != cudaSuccess) {
     cudaStreamDestroy(cudaStream);
-    return {};
+    return false;
   }
 
   // Запуск.
   if (!executionContext_->enqueueV3(cudaStream)) {
     cudaStreamDestroy(cudaStream);
-    return {};
+    return false;
   }
-
-  // Выделение памяти на CPU.
-  std::vector<BoundingBox> boxes(numElements_);
 
   // Копирование данных.
   if (cudaMemcpyAsync(
     deviceOutput_,
-    boxes.data(),
+    boxes_.data(),
     outputSizeBytes_,
     cudaMemcpyDeviceToHost,
     cudaStream
   ) != cudaSuccess) {
     cudaStreamDestroy(cudaStream);
-    return {};
+    return false;
   }
 
   // Ожидание завершения.
@@ -90,7 +88,7 @@ std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
 
   cudaStreamDestroy(cudaStream);
 
-  return boxes;
+  return true;
 }
 
 /// @brief Загрузка движка.
@@ -146,7 +144,7 @@ bool InferenceEngine::createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngi
   return true;
 }
 
-/// @brief Выделение памяти на GPU.
+/// @brief Выделение памяти на CPU и GPU.
 /// @return
 bool InferenceEngine::allocateBuffers() {
   LOG(layerName_, " ", "Выделение памяти на GPU...");
@@ -164,22 +162,23 @@ bool InferenceEngine::allocateBuffers() {
   }
 
   // Установка адреса входа.
-  if (executionContext_->setTensorAddress(inputName_.c_str(), deviceInput_)) {
+  if (!executionContext_->setTensorAddress(inputName_.c_str(), deviceInput_)) {
     return false;
   }
 
-  nvinfer1::Dims outputDims = executionContext_->getTensorShape(inputName_.c_str());
+  nvinfer1::Dims outputDims = executionContext_->getTensorShape(outputName_.c_str());
 
   outputSizeBytes_ = 1;
+  // Определения размера выхода.
   for (int i = 0; i < outputDims.nbDims; ++i) {
     outputSizeBytes_ *= outputDims.d[i];
   }
   LOG(layerName_, " ", "Размер выхода: ", outputSizeBytes_, " байт.");
 
   numElements_ = outputSizeBytes_ / sizeof(BoundingBox);
-  LOG(layerName_, " ", "Размер элементов выхода: ", numElements_);
+  LOG(layerName_, " ", "Количество элементов выхода: ", numElements_);
 
-  if (cudaMalloc(&deviceOutput_, outputSizeBytes_) != cudaSuccess) {
+  if (!cudaMalloc(&deviceOutput_, outputSizeBytes_) != cudaSuccess) {
     return false;
   }
 
@@ -189,6 +188,11 @@ bool InferenceEngine::allocateBuffers() {
   }
 
   LOG(layerName_, " ", "Выделение памяти на GPU успешно завершено!");
+
+  LOG(layerName_, " ", "Выделение памяти на CPU...");
+  // Выделение памяти на CPU.
+  boxes_.resize(numElements_);
+  LOG(layerName_, " ", "Выделение памяти на CPU успешно завершено!");
 
   return true;
 }
