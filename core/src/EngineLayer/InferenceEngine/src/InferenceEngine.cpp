@@ -44,7 +44,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 
 /// @brief
 /// @return
-std::vector<> InferenceEngine::run(const FrameData &data) {
+std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
 }
 
 /// @brief Загрузка движка.

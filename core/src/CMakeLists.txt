@@ -32,6 +32,8 @@ target_include_directories(
 
 target_link_libraries(core PRIVATE
   ${OpenCV_LIBS}
+  CUDA::cudart
+
   ${TENSORRT_DIR}/lib/libnvinfer.so
 )
 

@@ -32,6 +32,13 @@ public:
   }
 };
 
+//
+
+/// @brief
+struct BoundingBox {
+  //
+};
+
 /// @brief
 class IInferenceEngine {
 public:
@@ -46,7 +53,7 @@ public:
 
   /// @brief
   /// @return
-  virtual bool run(const FrameData &data) = 0;
+  virtual std::vector<BoundingBox> run(const FrameData &data) = 0;
 
 protected:
   /// @brief
@@ -70,7 +77,7 @@ public:
 
   /// @brief
   /// @return
-  std::vectro<> run(const FrameData &data) override;
+  std::vector<BoundingBox> run(const FrameData &data) override;
 
 private:
   /// @brief Загрузка движка.
