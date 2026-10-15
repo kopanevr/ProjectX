@@ -10,7 +10,7 @@ set(TENSORRT_DIR "${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-
 add_executable(core ${SOURCES})
 
 find_package(OpenCV 4 REQUIRED)
-find_package(CUDAToolkit REQUIRED)
+find_package(CUDAToolkit  REQUIRED)
 
 target_include_directories(
   core PRIVATE

@@ -32,7 +32,7 @@ start_services() {
     exit 1
   fi
 
-  # 3. Веб-интерфейс
+  # 3. Веб
   if [ -d "$BASE_DIR/web" ]; then
     echo "[3/3] Запуск Веб-сервера (Порт 80)..."
     echo $! > "$PID_DIR/web.pid"

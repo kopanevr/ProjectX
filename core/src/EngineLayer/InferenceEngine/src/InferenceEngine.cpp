@@ -13,7 +13,9 @@
 //
 
 /// @brief Инициализация.
-/// @param fileName
+/// @param fileName Имя файла.
+/// @param inputName Имя входа.
+/// @param outputName Имя выхода.
 /// @return Результат инициализации.
 bool InferenceEngine::initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) {
   LOG(layerName_, " ", "Загрузка TensorRT движка: ", fileName);
@@ -45,10 +47,36 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 /// @brief
 /// @return
 std::vector<BoundingBox> InferenceEngine::run(const FrameData &data) {
+  // Копирование данных.
+  if (cudaMemcpyAsync(
+    deviceInput_,
+    data.data.data,
+    inputSizeBytes_,
+    cudaMemcpyHostToDevice
+  ) != cudaSuccess) {
+    return {};
+  }
+
+  executionContext_->enqueueV3({});
+
+  // Выделение памяти.
+  std::vector<BoundingBox> boxes(numElements_);
+
+  // Копирование данных.
+  if (cudaMemcpyAsync(
+    deviceOutput_,
+    boxes.data(),
+    outputSizeBytes_,
+    cudaMemcpyDeviceToHost
+  ) != cudaSuccess) {
+    return {};
+  }
+
+  return boxes;
 }
 
 /// @brief Загрузка движка.
-/// @param fileName
+/// @param fileName Имя файла.
 std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::string &fileName) {
   LOG(layerName_, " ", "Запуск десериализации движка...");
 
@@ -76,7 +104,7 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
     runtime_ = std::unique_ptr<nvinfer1::IRuntime>(rawRuntime);
   }
 
-  // Десериализация движка
+  // Десериализация движка.
   const auto rawEngine = runtime_->deserializeCudaEngine(buffer.data(), size);
   if (!rawEngine ) {
     return nullptr;
@@ -129,6 +157,9 @@ bool InferenceEngine::allocateBuffers() {
     outputSizeBytes_ *= outputDims.d[i];
   }
   LOG(layerName_, " ", "Размер выхода: ", outputSizeBytes_, " байт.");
+
+  numElements_ = outputSizeBytes_ / sizeof(BoundingBox);
+  LOG(layerName_, " ", "Размер элементов выхода: ", numElements_);
 
   if (cudaMalloc(&deviceOutput_, outputSizeBytes_) != cudaSuccess) {
     return false;

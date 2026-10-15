@@ -36,7 +36,8 @@ public:
 
 /// @brief
 struct BoundingBox {
-  //
+  int x1, y1, x2, y2;
+  float conf;
 };
 
 /// @brief
@@ -113,6 +114,9 @@ private:
   void *deviceInput_{nullptr};
   /// @brief
   void *deviceOutput_{nullptr};
+
+  /// @brief
+  size_t numElements_
 
 };
 
