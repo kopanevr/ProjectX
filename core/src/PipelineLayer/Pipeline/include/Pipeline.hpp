@@ -58,8 +58,8 @@ public:
 
   /// @brief
   /// @return
-  bool getFrameForDisplay(FrameData &data) {
-    return displayQueue_.pop(, data);
+  bool getFrameForDisplay(FrameData &data, std::stop_token stop_token) {
+    return displayQueue_.pop(data, stop_token);
   }
 
 private:
@@ -88,5 +88,8 @@ private:
   Queue<FrameData> queue_;
   /// @brief
   Queue<FrameData> displayQueue_;
+
+  /// @brief
+  FrameData displayData_;
 
 };

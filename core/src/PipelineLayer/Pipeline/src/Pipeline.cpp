@@ -30,18 +30,17 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 }
 
 /// @brief Процесс.
+/// @brief
 bool Pipeline::process() {
-  FrameData data{};
-
-  if (getFrameForDisplay(data)) {
-    cv::imshow("", data.data);
+  if (getFrameForDisplay(displayData_, )) {
+    cv::imshow("", displayData_.data);
   }
 
   if (cv::waitKey(1) == 113) { // q
-    return false;
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 /// @brief Остановка.

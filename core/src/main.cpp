@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
   }
 
   while (true) {
-    if (!pipeline->process()) {
+    if (pipeline->process()) {
       break;
     }
   }
