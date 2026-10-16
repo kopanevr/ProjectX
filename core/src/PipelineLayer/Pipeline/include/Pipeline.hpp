@@ -58,10 +58,7 @@ public:
   /// @brief
   /// @return
   bool getFrameForDisplay(std::unique_ptr<FrameDisplayData> data, std::stop_token stoken) {
-    if (displayQueue_.pop(data, stoken)) {
-    }
-
-    return true;
+    return displayQueue_.pop(data, stoken);
   }
 
 private:
