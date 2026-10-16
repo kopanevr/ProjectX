@@ -12,13 +12,15 @@
 
 /// @brief Запуск.
 /// @param filePath Путь к файлу.
+/// @param inputName
+/// @param outputName
 bool Pipeline::start(const std::string &filePath, const std::string &inputName, const std::string &outputName) {
-  INFO(layerName_, " ", "Инициализация С++ ядра...");
+  INFO(layerName_, " ", "Инициализация C++ ядра...");
   if (!inferenceEngine_->initialize(filePath, inputName, outputName) || databaseWriter_->initialize()) {
     return false;
   }
 
-  INFO(layerName_, " ", "Инициализация С++ ядра успешно завершена!");
+  INFO(layerName_, " ", "Инициализация C++ ядра успешно завершена!");
 
   videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
@@ -30,29 +32,42 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 }
 
 /// @brief Процесс.
-/// @warning
-bool Pipeline::process() {
-  const cv::Scalar color(255, 45, 85); // pink
+void Pipeline::process() {
+  const cv::Scalar color(255., 45., 85.); // pink
+
+  /*
+  const cv::Scalar color(255., 55., 95.); // pink
+  const cv::Scalar color(231., 18., 77.); // pink
+  */
+
   const int thickness = 1;
+  const int lineType = cv::LINE_4;
 
   FrameDisplayData displayData{};
 
-  if (getFrameForDisplay(displayData, )) {
-    // Отрисовка рамок.
-    for (const auto &box: displayData.boxes) {
-      
-      
-      cv::rectangle(, color, thickness);
+  std::stop_token stop_token;
+
+  while (true) {
+    if (getFrameForDisplay(displayData, )) {
+      for (const auto &box: displayData.boxes) {
+        // Отрисовка рамки.
+        cv::rectangle(
+          displayData.data.data,
+          {box.x1, box.y1},
+          {box.x2, box.y2},
+          color,
+          thickness,
+          lineType
+        );
+      }
+
+      cv::imshow("temp", displayData.data.data);
     }
 
-    cv::imshow("", displayData_.data);
+    if (cv::waitKey(1) == 113) { // q
+      break;
+    }
   }
-
-  if (cv::waitKey(1) == 113) { // q
-    return true;
-  }
-
-  return false;
 }
 
 /// @brief Остановка.
@@ -63,6 +78,7 @@ void Pipeline::stop() {
 }
 
 /// @brief Поток захвата видео.
+/// @param stop_token
 void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
   long long index{};
 
@@ -90,24 +106,25 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
 }
 
 /// @brief Поток вывода.
+/// @param stop_token
 void Pipeline::inferenceWorker(std::stop_token stop_token) {
-  FrameData data{};
   FrameDisplayData displayData{};
 
+  //
+  inferenceEngine_->prepareBoundingBoxes(displayData.boxes);
+
   while(!stop_token.stop_requested()) {
-    if (queue_.pop(data, stop_token)) {
-      if (inferenceEngine_->run(data, displayData.boxes)) {
-        displayData.data = std::move(data);
-
-        //
-
-        displayQueue_.push(std::move(displayData));
+    if (queue_.pop(displayData.data, stop_token)) {
+      if (inferenceEngine_->run(displayData.data, displayData.boxes)) {
+        // Отправка в очередь.
+        displayQueue_.push();
       }
     }
   }
 }
 
 /// @brief Поток записи в базу данных.
+/// @param
 void Pipeline::databaseWriterWorker(std::stop_token stopToken) {
   //
 }

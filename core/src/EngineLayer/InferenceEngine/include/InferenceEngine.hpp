@@ -56,6 +56,9 @@ public:
   /// @return
   virtual bool run(const FrameData &data, const std::vector<BoundingBox> &boxes) = 0;
 
+  /// @brief
+  virtual void prepareBoundingBoxes(std::vector<BoundingBox> &boxes) = 0;
+
 protected:
   /// @brief
   const std::string layerName_ = "[Inference Engine]";
@@ -80,15 +83,20 @@ public:
   /// @return
   bool run(const FrameData &data, const std::vector<BoundingBox> &boxes) override;
 
+  /// @brief
+  /// @param boxes
+  void prepareBoundingBoxes(std::vector<BoundingBox> &boxes) override;
+
 private:
   /// @brief Загрузка движка.
   /// @param fileName
   std::shared_ptr<nvinfer1::ICudaEngine> loadEngine(const std::string &fileName);
   /// @brief
   bool createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine);
-  /// @brief Выделение памяти на CPU и GPU.
+
+  /// @brief Выделение памяти на GPU.
   bool allocateBuffers();
-  /// @brief Освобождение памяти  на GPU.
+  /// @brief Освобождение памяти на GPU.
   void freeBuffers();
 
 private:
@@ -116,7 +124,10 @@ private:
   void *deviceOutput_{nullptr};
 
   /// @brief
-  size_t numElements_;
+  static inline size_t numElements_;
+
+  /// @brief
+  FrameDisplayData displayData_;
 
 };
 

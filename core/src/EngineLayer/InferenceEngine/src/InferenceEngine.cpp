@@ -46,6 +46,8 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 }
 
 /// @brief Вывод.
+/// @param data
+/// @param boxes
 /// @return
 bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> &boxes) {
   cudaStream_t cudaStream{};
@@ -53,7 +55,7 @@ bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> 
     return false;
   }
 
-  // Копирование данных.
+  // Копирование данных c CPU на GPU.
   if (cudaMemcpyAsync(
     deviceInput_,
     data.data.data,
@@ -71,7 +73,7 @@ bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> 
     return false;
   }
 
-  // Копирование данных.
+  // Копирование данных c GPU на CPU.
   if (cudaMemcpyAsync(
     deviceOutput_,
     boxes.data(),
@@ -83,7 +85,7 @@ bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> 
     return false;
   }
 
-  // Ожидание завершения.
+  // Ожидание завершения .
   cudaStreamSynchronize(cudaStream);
 
   cudaStreamDestroy(cudaStream);
@@ -144,7 +146,15 @@ bool InferenceEngine::createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngi
   return true;
 }
 
-/// @brief Выделение памяти на CPU и GPU.
+/// @brief
+/// @param boxes
+void InferenceEngine::prepareBoundingBoxes(std::vector<BoundingBox> &boxes) {
+  boxes.resize(numElements_);
+
+  //
+}
+
+/// @brief Выделение памяти на GPU.
 /// @return
 bool InferenceEngine::allocateBuffers() {
   LOG(layerName_, " ", "Выделение памяти на GPU...");
@@ -188,11 +198,6 @@ bool InferenceEngine::allocateBuffers() {
   }
 
   LOG(layerName_, " ", "Выделение памяти на GPU успешно завершено!");
-
-  LOG(layerName_, " ", "Выделение памяти на CPU...");
-  // Выделение памяти на CPU.
-  boxes_.resize(numElements_);
-  LOG(layerName_, " ", "Выделение памяти на CPU успешно завершено!");
 
   return true;
 }

@@ -36,15 +36,13 @@ int main(int argc, char *argv[]) {
   }
 
   // Запуск конвейера.
-  if (pipeline->start("models/model.engine", "images", "output0")) {
+  if (pipeline->start("models/model.engine", "input", "output")) {
     return EXIT_FAILURE;
   }
 
   while (true) {
 #if (1)
-    if (pipeline->process()) {
-      break;
-    }
+  pipeline->process();
 #endif
   }
 

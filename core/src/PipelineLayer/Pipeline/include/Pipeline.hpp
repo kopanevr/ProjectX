@@ -51,8 +51,7 @@ public:
   /// @param filePath Путь к файлу.
   bool start(const std::string &filePath, const std::string &inputName, const std::string &outputName);
   /// @brief Процесс.
-  /// @return
-  bool process();
+  void process();
   /// @brief Останова.
   void stop();
 
