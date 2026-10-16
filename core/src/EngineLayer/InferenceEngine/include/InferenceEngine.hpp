@@ -35,12 +35,6 @@ public:
 //
 
 /// @brief
-struct BoundingBox {
-  int x1, y1, x2, y2;
-  float conf;
-};
-
-/// @brief
 class IInferenceEngine {
 public:
   /// @brief Деструктор.
@@ -54,10 +48,7 @@ public:
 
   /// @brief
   /// @return
-  virtual bool run(const FrameData &data, const std::vector<BoundingBox> &boxes) = 0;
-
-  /// @brief
-  virtual void prepareBoundingBoxes(std::vector<BoundingBox> &boxes) = 0;
+  virtual bool run(const FrameData &data, std::vector<BoundingBox> &boxes) = 0;
 
 protected:
   /// @brief
@@ -81,11 +72,7 @@ public:
 
   /// @brief Вывод.
   /// @return
-  bool run(const FrameData &data, const std::vector<BoundingBox> &boxes) override;
-
-  /// @brief
-  /// @param boxes
-  void prepareBoundingBoxes(std::vector<BoundingBox> &boxes) override;
+  bool run(const FrameData &data, std::vector<BoundingBox> &boxes) override;
 
 private:
   /// @brief Загрузка движка.
@@ -113,18 +100,10 @@ private:
   /// @brief
   std::string outputName_;
 
-  /// @brief Размер входа в байт.
-  size_t inputSizeBytes_;
-  /// @brief Размер выхода в байт.
-  size_t outputSizeBytes_;
-
   /// @brief
   void *deviceInput_{nullptr};
   /// @brief
   void *deviceOutput_{nullptr};
-
-  /// @brief
-  static inline size_t numElements_;
 
   /// @brief
   FrameDisplayData displayData_;

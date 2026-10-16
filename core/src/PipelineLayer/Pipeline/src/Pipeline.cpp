@@ -110,14 +110,11 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
 void Pipeline::inferenceWorker(std::stop_token stop_token) {
   FrameDisplayData displayData{};
 
-  //
-  inferenceEngine_->prepareBoundingBoxes(displayData.boxes);
-
   while(!stop_token.stop_requested()) {
     if (queue_.pop(displayData.data, stop_token)) {
       if (inferenceEngine_->run(displayData.data, displayData.boxes)) {
         // Отправка в очередь.
-        displayQueue_.push();
+        displayQueue_.push(std::move(displayData));
       }
     }
   }

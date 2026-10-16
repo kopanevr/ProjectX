@@ -8,6 +8,10 @@
 
 //
 
+#include "Config.hpp"
+
+//
+
 #include <cuda_runtime.h>
 
 //
@@ -49,7 +53,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 /// @param data
 /// @param boxes
 /// @return
-bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> &boxes) {
+bool InferenceEngine::run(const FrameData &data, std::vector<BoundingBox> &boxes) {
   cudaStream_t cudaStream{};
   if (cudaStreamCreate(&cudaStream) != cudaSuccess) {
     return false;
@@ -59,7 +63,7 @@ bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> 
   if (cudaMemcpyAsync(
     deviceInput_,
     data.data.data,
-    inputSizeBytes_,
+    Config::inputSizeBytes,
     cudaMemcpyHostToDevice,
     cudaStream
   ) != cudaSuccess) {
@@ -77,7 +81,7 @@ bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> 
   if (cudaMemcpyAsync(
     deviceOutput_,
     boxes.data(),
-    outputSizeBytes_,
+    Config::outputSizeBytes,
     cudaMemcpyDeviceToHost,
     cudaStream
   ) != cudaSuccess) {
@@ -146,28 +150,14 @@ bool InferenceEngine::createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngi
   return true;
 }
 
-/// @brief
-/// @param boxes
-void InferenceEngine::prepareBoundingBoxes(std::vector<BoundingBox> &boxes) {
-  boxes.resize(numElements_);
-
-  //
-}
-
 /// @brief Выделение памяти на GPU.
 /// @return
 bool InferenceEngine::allocateBuffers() {
   LOG(layerName_, " ", "Выделение памяти на GPU...");
 
-  nvinfer1::Dims4 inputDims{1, 3, 640, 640};
-  if (!executionContext_->setInputShape(inputName_.c_str(), inputDims)) {
-    return false;
-  }
+  LOG(layerName_, " ", "Размер входа: ", Config::inputSizeBytes, " байт.");
 
-  inputSizeBytes_ = 1 * 3 * 640 * 640 * sizeof(float);
-  LOG(layerName_, " ", "Размер входа: ", inputSizeBytes_, " байт.");
-
-  if (cudaMalloc(&deviceInput_, inputSizeBytes_) != cudaSuccess) {
+  if (cudaMalloc(&deviceInput_, Config::inputSizeBytes) != cudaSuccess) {
     return false;
   }
 
@@ -176,24 +166,14 @@ bool InferenceEngine::allocateBuffers() {
     return false;
   }
 
-  nvinfer1::Dims outputDims = executionContext_->getTensorShape(outputName_.c_str());
+  LOG(layerName_, " ", "Размер выхода: ", Config::outputSizeBytes, " байт.");
 
-  outputSizeBytes_ = 1;
-  // Определения размера выхода.
-  for (int i = 0; i < outputDims.nbDims; ++i) {
-    outputSizeBytes_ *= outputDims.d[i];
-  }
-  LOG(layerName_, " ", "Размер выхода: ", outputSizeBytes_, " байт.");
-
-  numElements_ = outputSizeBytes_ / sizeof(BoundingBox);
-  LOG(layerName_, " ", "Количество элементов выхода: ", numElements_);
-
-  if (!cudaMalloc(&deviceOutput_, outputSizeBytes_) != cudaSuccess) {
+  if (cudaMalloc(&deviceOutput_, Config::outputSizeBytes) != cudaSuccess) {
     return false;
   }
 
   // Установка адреса выхода.
-  if (executionContext_->setTensorAddress(outputName_.c_str(), deviceOutput_)) {
+  if (!executionContext_->setTensorAddress(outputName_.c_str(), deviceOutput_)) {
     return false;
   }
 

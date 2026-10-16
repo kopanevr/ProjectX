@@ -18,14 +18,18 @@ target_include_directories(
 
   ${CMAKE_CURRENT_SOURCE_DIR}/DatabaseWriter/include
 
+  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer
+  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Data
+  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Data/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue
+  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue/include
+
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/EngineLayer/InferenceEngine/include
 
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer/Pipeline/include
 
-  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue
-  ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Queue/include
 
   ${TENSORRT_DIR}/include
 )
