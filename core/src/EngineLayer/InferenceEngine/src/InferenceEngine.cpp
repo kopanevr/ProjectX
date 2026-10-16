@@ -47,7 +47,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 
 /// @brief Вывод.
 /// @return
-bool InferenceEngine::run(const FrameData &data) {
+bool InferenceEngine::run(const FrameData &data, const std::vector<BoundingBox> &boxes) {
   cudaStream_t cudaStream{};
   if (cudaStreamCreate(&cudaStream) != cudaSuccess) {
     return false;
@@ -74,7 +74,7 @@ bool InferenceEngine::run(const FrameData &data) {
   // Копирование данных.
   if (cudaMemcpyAsync(
     deviceOutput_,
-    boxes_.data(),
+    boxes.data(),
     outputSizeBytes_,
     cudaMemcpyDeviceToHost,
     cudaStream

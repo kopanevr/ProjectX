@@ -54,7 +54,7 @@ public:
 
   /// @brief
   /// @return
-  virtual bool run(const FrameData &data) = 0;
+  virtual bool run(const FrameData &data, const std::vector<BoundingBox> &boxes) = 0;
 
 protected:
   /// @brief
@@ -78,7 +78,7 @@ public:
 
   /// @brief Вывод.
   /// @return
-  bool run(const FrameData &data) override;
+  bool run(const FrameData &data, const std::vector<BoundingBox> &boxes) override;
 
 private:
   /// @brief Загрузка движка.
@@ -117,9 +117,6 @@ private:
 
   /// @brief
   size_t numElements_;
-
-  /// @brief
-  std::vector<BoundingBox> boxes_;
 
 };
 
