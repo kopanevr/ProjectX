@@ -2,6 +2,10 @@
 
 //
 
+#include <stop_token>
+
+//
+
 #include "Logger.hpp"
 
 //
@@ -32,7 +36,8 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 }
 
 /// @brief Процесс.
-void Pipeline::process() {
+/// @brief
+void Pipeline::process(std::stop_source source, std::stop_token stoken) {
   const cv::Scalar color(255., 45., 85.); // pink
 
   /*
@@ -42,31 +47,39 @@ void Pipeline::process() {
 
   const int thickness = 1;
   const int lineType = cv::LINE_4;
+  const int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 
   FrameDisplayData displayData{};
 
-  std::stop_token stop_token;
-
-  while (true) {
-    if (getFrameForDisplay(displayData, )) {
-      for (const auto &box: displayData.boxes) {
-        // Отрисовка рамки.
-        cv::rectangle(
-          displayData.data.data,
-          {box.x1, box.y1},
-          {box.x2, box.y2},
-          color,
-          thickness,
-          lineType
-        );
-      }
-
-      cv::imshow("temp", displayData.data.data);
+  if (getFrameForDisplay(displayData, stoken)) {
+    for (const auto &box: displayData.boxes) {
+      // Отрисовка рамки.
+      cv::rectangle(
+        displayData.data.data,
+        {box.x1, box.y1},
+        {box.x2, box.y2},
+        color,
+        thickness,
+        lineType
+      );
     }
 
-    if (cv::waitKey(1) == 113) { // q
-      break;
-    }
+    // Отрисовка текста.
+    cv::putText(
+      displayData.data.data,
+      ": ",
+      {10, 10},
+      fontFace,
+      1.,
+      color
+    );
+
+    cv::imshow("temp", displayData.data.data);
+  }
+
+  if (cv::waitKey(1) == 113) { // q
+    //
+    source.stop_requested();
   }
 }
 
@@ -79,7 +92,7 @@ void Pipeline::stop() {
 
 /// @brief Поток захвата видео.
 /// @param stop_token
-void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
+void Pipeline::videoCaptureWorker(std::stop_token stoken) {
   long long index{};
 
   cv::VideoCapture cap(0);
@@ -91,7 +104,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
     return;
   }
 
-  while(!stop_token.stop_requested()) {
+  while(!stoken.stop_requested()) {
     cap >> frame;
 
     if (frame.empty()) {
@@ -106,15 +119,23 @@ void Pipeline::videoCaptureWorker(std::stop_token stop_token) {
 }
 
 /// @brief Поток вывода.
-/// @param stop_token
-void Pipeline::inferenceWorker(std::stop_token stop_token) {
+/// @param stoken
+void Pipeline::inferenceWorker(std::stop_token stoken) {
   FrameDisplayData displayData{};
 
-  while(!stop_token.stop_requested()) {
-    if (queue_.pop(displayData.data, stop_token)) {
+  //
+  displayData.boxes.reserve(Config::outputSizeBytes);
+
+  while(!stoken.stop_requested()) {
+    if (queue_.pop(displayData.data, stoken)) {
+
+      displayData.boxes.clear();
+
       if (inferenceEngine_->run(displayData.data, displayData.boxes)) {
         // Отправка в очередь.
         displayQueue_.push(std::move(displayData));
+
+        displayData = FrameDisplayData();
       }
     }
   }
@@ -122,6 +143,6 @@ void Pipeline::inferenceWorker(std::stop_token stop_token) {
 
 /// @brief Поток записи в базу данных.
 /// @param
-void Pipeline::databaseWriterWorker(std::stop_token stopToken) {
+void Pipeline::databaseWriterWorker(std::stop_token token) {
   //
 }

@@ -10,6 +10,7 @@
 //
 
 #include <memory>
+#include <stop_token>
 
 //
 
@@ -40,12 +41,17 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
-  while (true) {
+  std::stop_source source{};
+  std::stop_token stoken = source.get_token();
+
+  while (!stoken.stop_requested()) {
 #if (1)
-  pipeline->process();
+  pipeline->process(source, stoken);
 #endif
   }
 
   // Остановка конвейера.
   pipeline->stop();
+
+  return EXIT_SUCCESS;
 }

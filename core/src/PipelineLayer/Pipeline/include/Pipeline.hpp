@@ -51,23 +51,23 @@ public:
   /// @param filePath Путь к файлу.
   bool start(const std::string &filePath, const std::string &inputName, const std::string &outputName);
   /// @brief Процесс.
-  void process();
+  void process(std::stop_source source, std::stop_token stoken);
   /// @brief Останова.
   void stop();
 
   /// @brief
   /// @return
-  bool getFrameForDisplay(FrameDisplayData &data, std::stop_token stop_token) {
-    return displayQueue_.pop(data, stop_token);
+  bool getFrameForDisplay(FrameDisplayData data, std::stop_token stoken) {
+    return displayQueue_.pop(data, stoken);
   }
 
 private:
   /// @brief Поток захвата видео.
-  void videoCaptureWorker(std::stop_token stop_token);
+  void videoCaptureWorker(std::stop_token stoken);
   /// @brief Поток вывода.
-  void inferenceWorker(std::stop_token stop_token);
+  void inferenceWorker(std::stop_token stoken);
   /// @brief Поток записи в базу данных.
-  void databaseWriterWorker(std::stop_token stop_token);
+  void databaseWriterWorker(std::stop_token stoken);
 
 private:
   /// @brief
