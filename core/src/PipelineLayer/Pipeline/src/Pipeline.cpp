@@ -49,13 +49,13 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
   const int lineType = cv::LINE_4;
   const int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 
-  FrameDisplayData displayData{};
+  auto displayData = std::unique_ptr<FrameDisplayData>();
 
-  if (getFrameForDisplay(displayData, stoken)) {
-    for (const auto &box: displayData.boxes) {
+  if (getFrameForDisplay(std::move(displayData), stoken)) {
+    for (const auto &box: displayData->boxes) {
       // Отрисовка рамки.
       cv::rectangle(
-        displayData.data.data,
+        displayData->data.data,
         {box.x1, box.y1},
         {box.x2, box.y2},
         color,
@@ -66,20 +66,42 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
 
     // Отрисовка текста.
     cv::putText(
-      displayData.data.data,
-      ": ",
+      displayData->data.data,
+      "Версия: ",
       {10, 10},
       fontFace,
       1.,
       color
     );
 
-    cv::imshow("temp", displayData.data.data);
-  }
+    // Отрисовка текста.
+    cv::putText(
+      displayData->data.data,
+      "Подверсия: ",
+      {10, 20},
+      fontFace,
+      1.,
+      color
+    );
 
-  if (cv::waitKey(1) == 113) { // q
-    //
-    source.stop_requested();
+    // Отрисовка текста.
+    cv::putText(
+      displayData->data.data,
+      ": ",
+      {10, 30},
+      fontFace,
+      1.,
+      color
+    );
+
+    cv::imshow("temp", displayData->data.data);
+
+    // Отправка в очередь.
+    freeQueue_.push(std::move(displayData));
+
+    if (cv::waitKey(1) == 113) { // q
+      source.stop_requested();
+    }
   }
 }
 
@@ -114,6 +136,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
 
     FrameData data{index++, frame};
 
+    // Отправка в очередь.
     queue_.push(std::move(data));
   }
 }
@@ -121,22 +144,26 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
 /// @brief Поток вывода.
 /// @param stoken
 void Pipeline::inferenceWorker(std::stop_token stoken) {
-  FrameDisplayData displayData{};
-
-  //
-  displayData.boxes.reserve(Config::outputSizeBytes);
+  auto displayData = std::unique_ptr<FrameDisplayData>();
 
   while(!stoken.stop_requested()) {
-    if (queue_.pop(displayData.data, stoken)) {
+    if (!freeQueue_.pop(displayData, stoken)) {
+      //
+    }
 
-      displayData.boxes.clear();
+    if (queue_.pop(displayData->data, stoken)) {
+      displayData->boxes.clear();
 
-      if (inferenceEngine_->run(displayData.data, displayData.boxes)) {
+      if (inferenceEngine_->run(displayData->data, displayData->boxes)) {
         // Отправка в очередь.
         displayQueue_.push(std::move(displayData));
-
-        displayData = FrameDisplayData();
+      } else {
+        // Отправка в очередь.
+        freeQueue_.push(std::move(displayData));
       }
+    } else {
+      // Отправка в очередь.
+      freeQueue_.push(std::move(displayData));
     }
   }
 }

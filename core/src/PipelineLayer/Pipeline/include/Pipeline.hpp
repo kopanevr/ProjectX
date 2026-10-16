@@ -57,8 +57,11 @@ public:
 
   /// @brief
   /// @return
-  bool getFrameForDisplay(FrameDisplayData data, std::stop_token stoken) {
-    return displayQueue_.pop(data, stoken);
+  bool getFrameForDisplay(std::unique_ptr<FrameDisplayData> data, std::stop_token stoken) {
+    if (displayQueue_.pop(data, stoken)) {
+    }
+
+    return true;
   }
 
 private:
@@ -85,7 +88,9 @@ private:
 
   /// @brief
   Queue<FrameData> queue_;
-  /// @brief
-  Queue<FrameDisplayData> displayQueue_;
 
+  /// @brief
+  Queue<std::unique_ptr<FrameDisplayData>> displayQueue_;
+  /// @brief
+  Queue<std::unique_ptr<FrameDisplayData>> freeQueue_;
 };
