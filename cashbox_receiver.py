@@ -29,7 +29,7 @@ def receive_receipt(receipt: ReceiptModel):
     except Exception as e:
         print(f"Ошибка записи чека: {e}")
 
-if __name__ == "__main"":
+if __name__ == "__main__"":
     import
 
 
