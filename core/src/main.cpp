@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   std::stop_token stoken = source.get_token();
 
   while (!stoken.stop_requested()) {
-#ifdef DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
+#if(1)
     pipeline->process(source, stoken);
 #endif
   }

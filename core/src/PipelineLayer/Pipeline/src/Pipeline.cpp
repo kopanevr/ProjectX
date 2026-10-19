@@ -20,7 +20,7 @@
 /// @param outputName Имя выхода.
 bool Pipeline::start(const std::string &filePath, const std::string &inputName, const std::string &outputName) {
   INFO(layerName_, " ", "Инициализация C++ ядра...");
-  if (!inferenceEngine_->initialize(filePath, inputName, outputName) || logWriter_->initialize()) {
+  if (!inferenceEngine_->initialize(filePath, inputName, outputName) || !logWriter_->initialize()) {
     return false;
   }
 
@@ -121,7 +121,6 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
 
   cv::VideoCapture cap(0);
 
-
   if (!cap.isOpened()) {
     ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры.");
     return;
@@ -150,7 +149,6 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
   auto displayData = std::unique_ptr<FrameDisplayData>();
 
   while(!stoken.stop_requested()) {
-#ifdef DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
     if (!freeDisplayQueue_.pop(displayData, stoken)) {
       //
     }
@@ -169,14 +167,6 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
       // Отправка в очередь.
       freeDisplayQueue_.push(std::move(displayData));
     }
-#else
-    if (queue_.pop(displayData->data, stoken)) {
-      displayData->boxes.clear();
-      if (inferenceEngine_->run(displayData->data, displayData->boxes)) {
-        //
-      }
-    }
-#endif
   }
 }
 

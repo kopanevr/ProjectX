@@ -10,10 +10,10 @@ set(TENSORRT_DIR "${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-
 add_executable(core ${SOURCES})
 
 # Опции.
-option(DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW "" ON)
+option(USE_TENSORRT "Отладка." OFF)
 
-if (DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW)
-  target_compile_definitions(core PRIVATE DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW)
+if (USE_TENSORRT)
+  target_compile_definitions(core PRIVATE USE_TENSORRT)
 endif()
 
 find_package(OpenCV 4 REQUIRED)

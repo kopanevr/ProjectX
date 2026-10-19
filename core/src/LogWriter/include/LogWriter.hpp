@@ -36,7 +36,7 @@ public:
   /// @brief Инициализация.
   /// @return Результат инициализации.
   bool initialize() override {
-    return {};
+    return true;
   }
 
 protected:

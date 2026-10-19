@@ -27,6 +27,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
   INFO(layerName_, " ", "Имя входа: ", inputName_ = inputName);
   INFO(layerName_, " ", "Имя выхода: ", outputName_ = outputName);
 
+#ifdef USE_TENSORRT
   // Загрузка движка.
   auto engine = loadEngine(fileName);
   if (!engine) {
@@ -45,6 +46,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
     ERROR(layerName_, " ", "Не удалось выделить память на GPU.");
     return false;
   }
+#endif
 
   return true;
 }
@@ -54,6 +56,7 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
 /// @param boxes
 /// @return
 bool InferenceEngine::run(const FrameData &data, std::vector<BoundingBox> &boxes) {
+#ifdef USE_TENSORRT
   cudaStream_t cudaStream{};
   if (cudaStreamCreate(&cudaStream) != cudaSuccess) {
     return false;
@@ -93,6 +96,7 @@ bool InferenceEngine::run(const FrameData &data, std::vector<BoundingBox> &boxes
   cudaStreamSynchronize(cudaStream);
 
   cudaStreamDestroy(cudaStream);
+#endif
 
   return true;
 }
@@ -130,7 +134,7 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
     return nullptr;
   }
 
-  INFO(layerName_, " ", "Десериализиация движка успешно завершена!", fileName);
+  INFO(layerName_, " ", "Десериализиация движка успешно завершена!");
 
   return std::shared_ptr<nvinfer1::ICudaEngine>(rawEngine);
 }
