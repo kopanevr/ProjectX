@@ -1,4 +1,8 @@
 {
+    "meta": {
+        "version": 0,
+        "subversion": 0
+    },
     "device_id": "",
     "interval_start": "",
     "interval_end": "",

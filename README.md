@@ -27,7 +27,20 @@
 
 * **Вычислитель: ** [NVIDIA Jetson Orin Nano](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit)
 
-* **Камера: ** [Logitech]()
+* **Камера: ** [Logitech ]()
+
+# Результат
+
+## Пример лога при успешном запуске пайплайна:
+
+```text
+[ИНФО] [Pipeline] Инициализация C++ ядра...
+[ИНФО] [Inference Engine] Загрузка TensorRT движка: ../../../models/yolo26s.engine
+[ИНФО] [Inference Engine] Имя входа: images
+[ИНФО] [Inference Engine] Имя выхода: output0
+[ИНФО] [Inference Engine] Запуск десериализации движка...
+[ИНФО] [Inference Engine] Размер файла движка: 219626764 байт.
+```
 
 ## Описание
 
