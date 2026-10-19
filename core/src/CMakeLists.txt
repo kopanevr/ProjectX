@@ -16,8 +16,6 @@ target_include_directories(
   core PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/Logger/include
 
-  ${CMAKE_CURRENT_SOURCE_DIR}/DatabaseWriter/include
-
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Data
   ${CMAKE_CURRENT_SOURCE_DIR}/DataLayer/Data/include
@@ -30,6 +28,7 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer/Pipeline/include
 
+  ${CMAKE_CURRENT_SOURCE_DIR}/LogWriter/include
 
   ${TENSORRT_DIR}/include
 )

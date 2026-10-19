@@ -25,8 +25,8 @@ start_services() {
   # 2. Скрипт записи чека.
   if [ -f "BASE_DIR/scripts/cashbox_receiver.py" ]; then
     echo "[2/3] Запуск скрипта записи чека..."
-    python3 ./scripts/cashbox_receiver.py
-    echo $! > "$PID_DIR/cashbox_receiver.pid"
+    python3 ./scripts/cboxreceiver.py
+    echo $! > "$PID_DIR/cboxreceiver.pid"
   else
     echo "Ошибка: Файл скрипта записи чека не найден."
     exit 1
@@ -48,7 +48,7 @@ start_services() {
 stop_services() {
   echo "=== Остановка системы ==="
 
-  for service in core llama; do
+  for service in core cboxreceiver; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
@@ -64,16 +64,16 @@ stop_services() {
 check_status() {
   echo "=== Статус ==="
 
-  for service in core llama; do
+  for service in core cboxreceiver; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
-        echo -e " $service: \033[0;32mРАБОТАЕТ\033[0m (PID: $PID)" # Зелёный
+        echo -e " $service: \033[0;32mРАБОТАЕТ\033[0m (PID: $PID)" # Зелёный.
       else
-        echo -e " $service: \033[0;31mУПАЛ\033[0m" # Красный
+        echo -e " $service: \033[0;31mУПАЛ\033[0m" # Красный.
       fi
     else
-      echo -e " $service: \033[0;33mНЕ ЗАПУЩЕН\033[0m" # Жёлтый
+      echo -e " $service: \033[0;33mНЕ ЗАПУЩЕН\033[0m" # Жёлтый.
     fi
   done
 }

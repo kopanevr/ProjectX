@@ -20,7 +20,7 @@
 /// @param outputName
 bool Pipeline::start(const std::string &filePath, const std::string &inputName, const std::string &outputName) {
   INFO(layerName_, " ", "Инициализация C++ ядра...");
-  if (!inferenceEngine_->initialize(filePath, inputName, outputName) || databaseWriter_->initialize()) {
+  if (!inferenceEngine_->initialize(filePath, inputName, outputName) || logWriter_->initialize()) {
     return false;
   }
 
@@ -30,7 +30,7 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 
   inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
 
-  databaseWriterThread_ = std::jthread(&Pipeline::databaseWriterWorker, this);
+  logWriterThread_ = std::jthread(&Pipeline::LogWriterWorker, this);
 
   return true;
 }
@@ -173,6 +173,6 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
 
 /// @brief Поток записи в базу данных.
 /// @param
-void Pipeline::databaseWriterWorker(std::stop_token token) {
+void Pipeline::LogWriterWorker(std::stop_token token) {
   //
 }

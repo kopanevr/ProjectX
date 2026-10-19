@@ -14,7 +14,7 @@
 
 //
 
-#include "DatabaseWriter.hpp"
+#include "LogWriter.hpp"
 
 //
 
@@ -31,7 +31,7 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
-  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()), std::unique_ptr<DatabaseWriter>(new (std::nothrow) DatabaseWriter())));
+  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()), std::unique_ptr<LogWriter>(new (std::nothrow) LogWriter())));
   if (!pipeline) {
     return EXIT_FAILURE;
   }

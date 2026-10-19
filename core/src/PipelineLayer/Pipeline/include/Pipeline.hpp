@@ -13,7 +13,7 @@
 
 //
 
-#include "DatabaseWriter.hpp"
+#include "LogWriter.hpp"
 
 //
 
@@ -38,9 +38,9 @@ protected:
 class Pipeline final : public IPipeline {
 public:
   /// @brief Конструктор.
-  Pipeline(std::unique_ptr<IInferenceEngine> inferenceEngine, std::unique_ptr<IDatabaseWriter> databaseWriter)
+  Pipeline(std::unique_ptr<IInferenceEngine> inferenceEngine, std::unique_ptr<ILogWriter> logWriter)
       : inferenceEngine_(std::move(inferenceEngine)),
-        databaseWriter_(std::move(databaseWriter)) {}
+        logWriter_(std::move(logWriter)) {}
 
   /// @brief Деструктор.
   ~Pipeline() {
@@ -67,21 +67,21 @@ private:
   /// @brief Поток вывода.
   void inferenceWorker(std::stop_token stoken);
   /// @brief Поток записи в базу данных.
-  void databaseWriterWorker(std::stop_token stoken);
+  void LogWriterWorker(std::stop_token stoken);
 
 private:
   /// @brief
   std::unique_ptr<IInferenceEngine> inferenceEngine_;
 
   /// @brief
-  std::unique_ptr<IDatabaseWriter> databaseWriter_;
+  std::unique_ptr<ILogWriter> logWriter_;
 
   /// @brief
   std::jthread videoCaptureThread_;
   /// @brief
   std::jthread inferenceThread_;
     /// @brief
-  std::jthread databaseWriterThread_;
+  std::jthread logWriterThread_;
 
   /// @brief
   Queue<FrameData> queue_;

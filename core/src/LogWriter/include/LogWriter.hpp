@@ -12,10 +12,10 @@
 //
 
 /// @brief
-class IDatabaseWriter {
+class ILogWriter {
 public:
   /// @brief Деструктор.
-  virtual ~IDatabaseWriter() = default;
+  virtual ~ILogWriter() = default;
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
@@ -28,10 +28,10 @@ private:
 };
 
 /// @brief
-class DatabaseWriter final : public IDatabaseWriter {
+class LogWriter final : public ILogWriter {
 public:
   /// @brief Деструктор.
-  ~DatabaseWriter() = default;
+  ~LogWriter() = default;
 
   /// @brief Инициализация.
   /// @return Результат инициализации.
