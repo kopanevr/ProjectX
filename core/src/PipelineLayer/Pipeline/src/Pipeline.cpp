@@ -173,6 +173,6 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
 
 /// @brief Поток записи в базу данных.
 /// @param
-void Pipeline::LogWriterWorker(std::stop_token token) {
+void Pipeline::LogWriterWorker(std::stop_token stoken) {
   //
 }

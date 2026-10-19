@@ -46,3 +46,12 @@ add_custom_command(
   COMMAND size core --format=gnu
   COMMENT "Размеры секций:"
 )
+
+add_custom_command(
+  TARGET core
+  POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          ${CMAKE_BINARY_DIR}/src/core
+          ${CMAKE_SOURCE_DIR}/bin/core
+  COMMENT "Копирование Core ELF."
+)

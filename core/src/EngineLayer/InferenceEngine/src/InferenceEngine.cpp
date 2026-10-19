@@ -22,14 +22,14 @@
 /// @param outputName Имя выхода.
 /// @return Результат инициализации.
 bool InferenceEngine::initialize(const std::string &fileName, const std::string &inputName, const std::string &outputName) {
-  LOG(layerName_, " ", "Загрузка TensorRT движка: ", fileName);
+  INFO(layerName_, " ", "Загрузка TensorRT движка: ", fileName);
 
-  LOG(layerName_, " ", "Имя входа: ", inputName_ = inputName);
-  LOG(layerName_, " ", "Имя выхода: ", outputName_ = outputName);
+  INFO(layerName_, " ", "Имя входа: ", inputName_ = inputName);
+  INFO(layerName_, " ", "Имя выхода: ", outputName_ = outputName);
 
   // Загрузка движка.
   auto engine = loadEngine(fileName);
-  if (engine) {
+  if (!engine) {
     ERROR(layerName_, " ", "Не удалось загрузить TensorRT движок.");
     return false;
   }
@@ -100,7 +100,7 @@ bool InferenceEngine::run(const FrameData &data, std::vector<BoundingBox> &boxes
 /// @brief Загрузка движка.
 /// @param fileName Имя файла.
 std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::string &fileName) {
-  LOG(layerName_, " ", "Запуск десериализации движка...");
+  INFO(layerName_, " ", "Запуск десериализации движка...");
 
   std::ifstream file(fileName, std::ios::binary);
   if (!file.good()) {
@@ -109,7 +109,7 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
 
   file.seekg(0, std::ios::end);
   const auto size = file.tellg();
-  LOG(layerName_, " ", "Размер файла движка: ", size, " байт.");
+  INFO(layerName_, " ", "Размер файла движка: ", size, " байт.");
   file.seekg(0, std::ios::beg);
 
   std::vector<char> buffer(size);
@@ -132,7 +132,7 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
     return nullptr;
   }
 
-  LOG(layerName_, " ", "Десериализиация движка успешно завершена!", fileName);
+  INFO(layerName_, " ", "Десериализиация движка успешно завершена!", fileName);
 
   return std::shared_ptr<nvinfer1::ICudaEngine>(rawEngine);
 }
@@ -153,9 +153,9 @@ bool InferenceEngine::createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngi
 /// @brief Выделение памяти на GPU.
 /// @return
 bool InferenceEngine::allocateBuffers() {
-  LOG(layerName_, " ", "Выделение памяти на GPU...");
+  INFO(layerName_, " ", "Выделение памяти на GPU...");
 
-  LOG(layerName_, " ", "Размер входа: ", Config::inputSizeBytes, " байт.");
+  INFO(layerName_, " ", "Размер входа: ", Config::inputSizeBytes, " байт.");
 
   if (cudaMalloc(&deviceInput_, Config::inputSizeBytes) != cudaSuccess) {
     return false;
@@ -166,7 +166,7 @@ bool InferenceEngine::allocateBuffers() {
     return false;
   }
 
-  LOG(layerName_, " ", "Размер выхода: ", Config::outputSizeBytes, " байт.");
+  INFO(layerName_, " ", "Размер выхода: ", Config::outputSizeBytes, " байт.");
 
   if (cudaMalloc(&deviceOutput_, Config::outputSizeBytes) != cudaSuccess) {
     return false;
@@ -177,7 +177,7 @@ bool InferenceEngine::allocateBuffers() {
     return false;
   }
 
-  LOG(layerName_, " ", "Выделение памяти на GPU успешно завершено!");
+  INFO(layerName_, " ", "Выделение памяти на GPU успешно завершено!");
 
   return true;
 }

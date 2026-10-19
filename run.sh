@@ -8,7 +8,7 @@ start_services() {
   echo "=== Запуск системы ==="
 
   # 1. C++ Ядро.
-  if [ -f "$BASE_DIR/bin/core.elf" ]; then
+  if [ -f "$BASE_DIR/core/bin/core" ]; then
     echo "[1/3] Запуск С++ ядра..."
     cd "$BASE_DIR" && ./bin/core.elf
     echo $! > "$PID_DIR/core.pid"
