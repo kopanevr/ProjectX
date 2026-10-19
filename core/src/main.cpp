@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Запуск конвейера.
-  if (pipeline->start("../models/model.engine", "input", "output")) {
+  if (pipeline->start("../../../models/yolo26s.engine", "images", "output0")) {
     return EXIT_FAILURE;
   }
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   std::stop_token stoken = source.get_token();
 
   while (!stoken.stop_requested()) {
-#ifdef USER_OPTION_DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
+#ifdef DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
     pipeline->process(source, stoken);
 #endif
   }

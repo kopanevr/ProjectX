@@ -150,7 +150,7 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
   auto displayData = std::unique_ptr<FrameDisplayData>();
 
   while(!stoken.stop_requested()) {
-#ifdef USER_OPTION_DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
+#ifdef DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
     if (!freeDisplayQueue_.pop(displayData, stoken)) {
       //
     }

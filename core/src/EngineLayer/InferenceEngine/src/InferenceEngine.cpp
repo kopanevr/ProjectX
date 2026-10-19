@@ -117,17 +117,15 @@ std::shared_ptr<nvinfer1::ICudaEngine> InferenceEngine::loadEngine(const std::st
     return nullptr;
   }
 
-  if (!runtime_) {
-    const auto rawRuntime = nvinfer1::createInferRuntime(inferenceLogger_);
-    if (!rawRuntime ) {
-      return nullptr;
-    }
-
-    runtime_ = std::unique_ptr<nvinfer1::IRuntime>(rawRuntime);
+  auto rawRuntime = nvinfer1::createInferRuntime(inferenceLogger_);
+  if (!rawRuntime ) {
+    return nullptr;
   }
 
+  runtime_ = std::unique_ptr<nvinfer1::IRuntime>(rawRuntime);
+
   // Десериализация движка.
-  const auto rawEngine = runtime_->deserializeCudaEngine(buffer.data(), size);
+  auto rawEngine = runtime_->deserializeCudaEngine(buffer.data(), size);
   if (!rawEngine ) {
     return nullptr;
   }
