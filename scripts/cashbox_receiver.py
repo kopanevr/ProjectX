@@ -31,5 +31,3 @@ def receive_receipt(receipt: ReceiptModel):
 
 if __name__ == "__main__"":
     import
-
-

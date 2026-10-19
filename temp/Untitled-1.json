@@ -3,10 +3,10 @@
     "interval_start": "",
     "interval_end": "",
     "data": {
-        "in": ,
-        "out": ,
-        "receipts_count": ,
-        "total_revenue": ,
+        "in":,
+        "out":,
+        "receipts_count":,
+        "total_revenue":,
     },
     "diagnostic": {
         "state":,

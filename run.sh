@@ -7,28 +7,38 @@ LOGS_DIR="$BASE_DIR/logs"
 start_services() {
   echo "=== Запуск системы ==="
 
-  # 1. LLama.cpp
-  if [ -f "/" ]; then
-    echo "[1/2] Запуск llama-server..."
-    /llama-server -m
-    echo $! > "$PID_DIR/llama.pid"
-  else
-    echo "Ошибка: llama-server не найден."
-    exit 1
-  fi
-
-  TIME=5s
-
-  echo "Ожидание $TIME сек..."
-  sleep $TIME
-
-  # 2. C++ Ядро
+  # 1. C++ Ядро.
   if [ -f "$BASE_DIR/bin/core.elf" ]; then
-    echo "[2/2] Запуск С++ ядра..."
+    echo "[1/3] Запуск С++ ядра..."
     cd "$BASE_DIR" && ./bin/core.elf
     echo $! > "$PID_DIR/core.pid"
   else
     echo "Ошибка: Core ELF не найден."
+    exit 1
+  fi
+
+  TIME=2s
+
+  echo "Ожидание $TIME сек..."
+  sleep $TIME
+
+  # 2. Скрипт записи чека.
+  if [ -f "BASE_DIR/scripts/cashbox_receiver.py" ]; then
+    echo "[2/3] Запуск скрипта записи чека..."
+    python3 ./scripts/cashbox_receiver.py
+    echo $! > "$PID_DIR/cashbox_receiver.pid"
+  else
+    echo "Ошибка: Файл скрипта записи чека не найден."
+    exit 1
+  fi
+
+  # 3. Скрипт агрегатора.
+  if [ -f "BASE_DIR/scripts/.py" ]; then
+    echo "[3/3] Запуск скрипта агрегатора..."
+    python3 ./scripts/.py
+    echo $! > "$PID_DIR/.pid"
+  else
+    echo "Ошибка: Файл скрипта агрегатора не найден."
     exit 1
   fi
 
