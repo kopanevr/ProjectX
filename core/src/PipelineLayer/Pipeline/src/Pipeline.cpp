@@ -2,6 +2,8 @@
 
 //
 
+#include <string>
+#include <chrono>
 #include <stop_token>
 
 //
@@ -38,9 +40,10 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 /// @brief Процесс.
 /// @brief
 void Pipeline::process(std::stop_source source, std::stop_token stoken) {
-  const cv::Scalar color(255., 45., 85.); // pink
+  const cv::Scalar color(242., 242., 247.); // gray
 
   /*
+  const cv::Scalar color(255., 45., 85.); // pink
   const cv::Scalar color(255., 55., 95.); // pink
   const cv::Scalar color(231., 18., 77.); // pink
   */
@@ -49,9 +52,19 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
   const int lineType = cv::LINE_4;
   const int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 
+  auto lastTime = std::chrono::steady_clock::now();
+  double fps{};
+
   auto displayData = std::unique_ptr<FrameDisplayData>();
 
   if (getFrameForDisplay(std::move(displayData), stoken)) {
+    auto currentTime = std::chrono::steady_clock::now();\
+    std::chrono::duration<double> elapsed = currentTime - lastTime;
+
+    if (elapsed.count() > 0) {
+      fps = 1. / elapsed.count();
+    }
+
     for (const auto &box: displayData->boxes) {
       // Отрисовка рамки.
       cv::rectangle(
@@ -87,7 +100,7 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
     // Отрисовка текста.
     cv::putText(
       displayData->data.data,
-      ": ",
+      "FPS: " + std::to_string(fps),
       {10, 40},
       fontFace,
       1.,
@@ -123,6 +136,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
 
   if (!cap.isOpened()) {
     ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры.");
+    videoCaptureThread_.request_stop();
     return;
   }
 
