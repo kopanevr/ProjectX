@@ -6,7 +6,7 @@ DEVICE_ID = ""
 INTERVAL_MINUTES = 5
 
 def main():
-    print(f"Скрипт запущен. Отправка каждые {INTERVAL_MINUTES} минут.")
+    print(f"Скрипт  запущен. Отправка каждые {INTERVAL_MINUTES} минут.")
 
     while True:
         # 5 минут
@@ -34,4 +34,5 @@ def main():
             print(f"Данные успешно отправлены: {response.json()}")
         else:
             print(f"Ошибка сервера {response.status_code}: {response.text}")
+
 }

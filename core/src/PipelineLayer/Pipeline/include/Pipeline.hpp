@@ -38,6 +38,8 @@ protected:
 class Pipeline final : public IPipeline {
 public:
   /// @brief Конструктор.
+  /// @param inputName Имя входа.
+  /// @param outputName Имя выхода.
   Pipeline(std::unique_ptr<IInferenceEngine> inferenceEngine, std::unique_ptr<ILogWriter> logWriter)
       : inferenceEngine_(std::move(inferenceEngine)),
         logWriter_(std::move(logWriter)) {}
@@ -67,7 +69,7 @@ private:
   /// @brief Поток вывода.
   void inferenceWorker(std::stop_token stoken);
   /// @brief Поток записи в базу данных.
-  void LogWriterWorker(std::stop_token stoken);
+  void logWriterWorker(std::stop_token stoken);
 
 private:
   /// @brief

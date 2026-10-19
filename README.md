@@ -17,10 +17,17 @@
 
 Для сборки и запуска проекта:
 
-* **Компилятор C++:** С поддержкой C++20 и выше.
-* **OpenCV:** Для захвата видео (Версия 4).
-* **TensorRT:** Для вывода модели.
-* **Система сборки:** CMake (Версия 3.10).
+* **Компилятор C++: ** С поддержкой C++20 и выше.
+
+* **OpenCV: ** Для захвата видео (Версия 4).
+* **TensorRT: ** Для вывода модели.
+* **Система сборки: ** CMake (Версия 3.10).
+
+## Железо (Hardware)
+
+* **Вычислитель: ** [NVIDIA Jetson Orin Nano](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit)
+
+* **Камера: ** [Logitech]()
 
 ## Описание
 

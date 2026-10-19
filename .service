@@ -1,5 +1,5 @@
 [Unit]
-Description=Custom Service
+Description=Blueberry Ai Retail Service
 After=network.target
 
 [Service]

@@ -32,7 +32,7 @@ start_services() {
     exit 1
   fi
 
-  # 3. Скрипт агрегатора.
+  # 3. Скрипт .
   if [ -f "BASE_DIR/scripts/.py" ]; then
     echo "[3/3] Запуск скрипта агрегатора..."
     python3 ./scripts/.py
@@ -48,7 +48,7 @@ start_services() {
 stop_services() {
   echo "=== Остановка системы ==="
 
-  for service in core cboxreceiver; do
+  for service in core cboxreceiver ; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
@@ -64,7 +64,7 @@ stop_services() {
 check_status() {
   echo "=== Статус ==="
 
-  for service in core cboxreceiver; do
+  for service in core cboxreceiver ; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then

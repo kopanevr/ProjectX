@@ -16,8 +16,8 @@
 
 /// @brief Запуск.
 /// @param filePath Путь к файлу.
-/// @param inputName
-/// @param outputName
+/// @param inputName Имя входа.
+/// @param outputName Имя выхода.
 bool Pipeline::start(const std::string &filePath, const std::string &inputName, const std::string &outputName) {
   INFO(layerName_, " ", "Инициализация C++ ядра...");
   if (!inferenceEngine_->initialize(filePath, inputName, outputName) || logWriter_->initialize()) {
@@ -30,7 +30,7 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 
   inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
 
-  logWriterThread_ = std::jthread(&Pipeline::LogWriterWorker, this);
+  logWriterThread_ = std::jthread(&Pipeline::logWriterWorker, this);
 
   return true;
 }
@@ -88,7 +88,7 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
     cv::putText(
       displayData->data.data,
       ": ",
-      {10, 30},
+      {10, 40},
       fontFace,
       1.,
       color
@@ -150,6 +150,7 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
   auto displayData = std::unique_ptr<FrameDisplayData>();
 
   while(!stoken.stop_requested()) {
+#ifdef USER_OPTION_DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
     if (!freeDisplayQueue_.pop(displayData, stoken)) {
       //
     }
@@ -168,11 +169,19 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
       // Отправка в очередь.
       freeDisplayQueue_.push(std::move(displayData));
     }
+#else
+    if (queue_.pop(displayData->data, stoken)) {
+      displayData->boxes.clear();
+      if (inferenceEngine_->run(displayData->data, displayData->boxes)) {
+        //
+      }
+    }
+#endif
   }
 }
 
 /// @brief Поток записи в базу данных.
 /// @param
-void Pipeline::LogWriterWorker(std::stop_token stoken) {
+void Pipeline::logWriterWorker(std::stop_token stoken) {
   //
 }

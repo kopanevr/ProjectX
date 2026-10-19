@@ -31,7 +31,9 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
-  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()), std::unique_ptr<LogWriter>(new (std::nothrow) LogWriter())));
+  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(
+      std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()),
+      std::unique_ptr<LogWriter>(new (std::nothrow) LogWriter())));
   if (!pipeline) {
     return EXIT_FAILURE;
   }
@@ -45,8 +47,8 @@ int main(int argc, char *argv[]) {
   std::stop_token stoken = source.get_token();
 
   while (!stoken.stop_requested()) {
-#if (1)
-  pipeline->process(source, stoken);
+#ifdef USER_OPTION_DISPLAY_AN_IMAGE_IN_SPECIFIC_WINDOW
+    pipeline->process(source, stoken);
 #endif
   }
 
