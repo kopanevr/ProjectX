@@ -89,5 +89,6 @@ private:
   /// @brief
   Queue<std::unique_ptr<FrameDisplayData>> displayQueue_;
   /// @brief
-  Queue<std::unique_ptr<FrameDisplayData>> freeQueue_;
+  Queue<std::unique_ptr<FrameDisplayData>> freeDisplayQueue_;
+
 };

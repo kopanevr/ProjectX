@@ -97,10 +97,12 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
     cv::imshow("temp", displayData->data.data);
 
     // Отправка в очередь.
-    freeQueue_.push(std::move(displayData));
+    freeDisplayQueue_.push(std::move(displayData));
 
     if (cv::waitKey(1) == 113) { // q
-      source.stop_requested();
+      if (!source.stop_requested()) {
+        //
+      }
     }
   }
 }
@@ -119,7 +121,6 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
 
   cv::VideoCapture cap(0);
 
-  cv::Mat frame;
 
   if (!cap.isOpened()) {
     ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры.");
@@ -127,6 +128,8 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
   }
 
   while(!stoken.stop_requested()) {
+    cv::Mat frame;
+
     cap >> frame;
 
     if (frame.empty()) {
@@ -134,7 +137,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
       continue;
     }
 
-    FrameData data{index++, frame};
+    FrameData data{index++, std::move(frame)};
 
     // Отправка в очередь.
     queue_.push(std::move(data));
@@ -147,7 +150,7 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
   auto displayData = std::unique_ptr<FrameDisplayData>();
 
   while(!stoken.stop_requested()) {
-    if (!freeQueue_.pop(displayData, stoken)) {
+    if (!freeDisplayQueue_.pop(displayData, stoken)) {
       //
     }
 
@@ -159,11 +162,11 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
         displayQueue_.push(std::move(displayData));
       } else {
         // Отправка в очередь.
-        freeQueue_.push(std::move(displayData));
+        freeDisplayQueue_.push(std::move(displayData));
       }
     } else {
       // Отправка в очередь.
-      freeQueue_.push(std::move(displayData));
+      freeDisplayQueue_.push(std::move(displayData));
     }
   }
 }
