@@ -2,7 +2,9 @@ from datetime import datetime
 import time
 import requests
 
-SERVER_URL = "http://127.0.0.1:"
+import aggregator
+
+SERVER_URL = "https://127.0.0.1:"
 DEVICE_ID = ""
 INTERVAL_MINUTES = 5
 
@@ -37,7 +39,7 @@ def main():
             response = requests.post(SERVER_URL, json=payload, timeout=10)
 
             if response.status_code == 200:
-                print(f"Данные от устройства с id {DEVICE_ID} на удаленный сервер успешно отправлены: {response.json()}")
+                print(f"Данные от устройства c id {DEVICE_ID} на удаленный сервер успешно отправлены: {response.json()}")
             else:
                 print(f"Ошибка удаленного сервера {response.status_code}: {response.text}")
     except Exception as e:
