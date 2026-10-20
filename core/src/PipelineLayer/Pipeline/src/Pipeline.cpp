@@ -58,7 +58,7 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
   auto displayData = std::unique_ptr<FrameDisplayData>();
 
   if (getFrameForDisplay(std::move(displayData), stoken)) {
-    auto currentTime = std::chrono::steady_clock::now();\
+    auto currentTime = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsed = currentTime - lastTime;
 
     if (elapsed.count() > 0) {
