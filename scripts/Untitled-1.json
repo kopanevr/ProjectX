@@ -1,18 +1,18 @@
 {
     "meta": {
-        "version": 0,
-        "subversion": 0
+        "version":,
+        "subversion":
     },
     "device_id": "",
-    "interval_start": "",
-    "interval_end": "",
+    "interval_start":,
+    "interval_end":,
     "data": {
-        "in":,
-        "out":,
+        "visitors_in":,
+        "visitors_out":,
         "receipts_count":,
         "total_revenue":,
     },
     "diagnostic": {
-        "state":,
+        "device_state":,
     }
 }

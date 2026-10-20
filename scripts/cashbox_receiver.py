@@ -9,14 +9,14 @@ import uvicorn
 app = FastAPI()
 
 # Путь к файлу.
-LOG_FILE_PATH = Path("tmp/blueberry_logs/cashbox_raw.blueberry_retail.log")
+LOG_FILE_PATH = Path("/tmp/blueberry_logs/cashbox_raw.blueberry_retail.log")
 
 #
 os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
 
 class ReceiptModel(BaseModel):
     receipt_id: str # ID чека.
-    total_amount: float # Сумма чека.
+    total_revenue: float # Сумма чека.
 
 @app.post(path="/receipts")
 async def receive_receipt(receipt: ReceiptModel):
@@ -24,14 +24,14 @@ async def receive_receipt(receipt: ReceiptModel):
         log_entry = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "receipt_id": receipt.receipt_id,
-            "total_amount": receipt.total_amount
+            "total_revenue": receipt.total_revenue
         }
 
         #
         with open(LOG_FILE_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(log_entry) + "\n")
 
-        print(f"[{datetime.now()}] Чек с id {receipt.receipt_id} на сумму {receipt.total_amount} рублей успешно записан!")
+        print(f"[{datetime.now()}] Чек с id {receipt.receipt_id} на сумму {receipt.total_revenue} рублей успешно записан!")
 
         return {"receipt_id": receipt.receipt_id}
 
@@ -40,4 +40,4 @@ async def receive_receipt(receipt: ReceiptModel):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run("cashbox_receiver:app", host="127.0.0.1", port=0, reload=True)
+    uvicorn.run("cashbox_receiver:app", host="127.0.0.1", port=0, reload=True, log_level="trace")
