@@ -42,6 +42,16 @@
 [ИНФО] [Inference Engine] Размер файла движка: 219626764 байт.
 ```
 
+Для проверки работоспособности сервера и корректности записи чеков выполните POST-запрос с помощью утилиты curl.
+
+**Шаблон запроса:**
+
+```bash
+curl -X POST "http://X.X.X.X:X/receipts" \
+    -H "Content-type: application/json" \
+    -d '{"receipt_id": "X", "total_amount": X}'
+```
+
 ## Описание
 
 Для обнаружения объектов применяется модель [YOLO26s](https://huggingface.co/Ultralytics/YOLO26).

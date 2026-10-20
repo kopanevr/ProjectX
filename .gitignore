@@ -1,5 +1,6 @@
 build/
-models/*.engine
 thirdParty/
+models/*.engine
+scripts/__pycache__/
 
 .clang-format
