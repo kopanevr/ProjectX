@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from pathlib import Path
 import json
 import os
 from fastapi import FastAPI
@@ -8,7 +9,7 @@ import uvicorn
 app = FastAPI()
 
 # Путь к файлу.
-LOG_FILE_PATH = "tmp/blueberry_logs/cashbox_raw.blueberry_retail.log"
+LOG_FILE_PATH = Path("tmp/blueberry_logs/cashbox_raw.blueberry_retail.log")
 
 #
 os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
@@ -36,7 +37,7 @@ async def receive_receipt(receipt: ReceiptModel):
 
     except Exception as e:
         print(f"Ошибка записи чека: {e}")
-        raise HTTPException(status_code=500, detail={str{e}})
+        raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__"":
-    uvicorn.run("cashbox_receiver:app", host="0.0.0.0", port=, reload=True)
+if __name__ == "__main__":
+    uvicorn.run("cashbox_receiver:app", host="127.0.0.1", port=0, reload=True)

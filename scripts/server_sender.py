@@ -6,7 +6,7 @@ DEVICE_ID = ""
 INTERVAL_MINUTES = 5
 
 def main():
-    print(f"Скрипт  запущен. Отправка каждые {INTERVAL_MINUTES} минут.")
+    print(f"Скрипт отправки данных на удаленный сервер запущен. Отправка каждые {INTERVAL_MINUTES} минут.")
 
     while True:
         # 5 минут
@@ -14,6 +14,10 @@ def main():
 
         # JSON
         payload = {
+            "meta": {
+                "version": 0,
+                "subversion": 0
+            },
             "device_id": "",
             "interval_start": "",
             "interval_end": "",
@@ -34,5 +38,7 @@ def main():
             print(f"Данные успешно отправлены: {response.json()}")
         else:
             print(f"Ошибка сервера {response.status_code}: {response.text}")
-
 }
+
+if __name__ == "__main__":
+    main()
