@@ -6,11 +6,10 @@ import json
 CASHBOX_LOG_FILE_PATH = Path("/tmp/blueberry_logs/cashbox_raw.blueberry_retail.log")
 CUSTOMER_COUNTER_LOG_FILE_PATH = Path("/tmp/blueberry_logs/customer_counter_raw.blueberry_retail.log")
 
-
 class Aggregator:
     def __init__(self):
 
-    def read_file(filepath):
+    def read_file(self, filepath):
         #
         data = []
         try:
@@ -35,27 +34,48 @@ class Aggregator:
                 print(f"Ошибка чтения файла: {filepath}")
                 return []
 
-    def aggregate(datetime):
-        self.total_revenue = 0
+    def aggregate(self, interval_start, interval_stop):
+        self.total_revenue = 0.0
+        self.receipts_count = 0
 
-        cashbox_log_raw = read_file(CASHBOX_LOG_FILE_PATH)
-        customer_counter_raw = read_file(CUSTOMER_COUNTER_LOG_FILE_PATH)
+        self.visitors_in = 0
+        self.visitors_out = 0
 
-        if not cashbox_log_raw and not customer_counter_raw:
-            return
+        cashbox_log = read_file(CASHBOX_LOG_FILE_PATH)
+        if not cashbox_log:
+            return False
 
-        for item in cashbox_log_raw:
-            item[]
+        customer_counter = read_file(CUSTOMER_COUNTER_LOG_FILE_PATH)
+        if not customer_counter:
+            return False
 
+        # Обработка логов чеков.
+        for log in cashbox_log:
+            if "timestamp" in log:
+                log_time = self.decode_datetime(log["timestamp"])
 
-    def get_total_revenue():
-        return self.total_revenue
+                if interval_start <= log_time <= interval_stop:
+                    self.total_revenue += log.get("total_revenue", 0.0)
+                    self.receipts_count += 1
 
-    def get_receipts_count():
-        return self.get_receipts_count
+        # Обработка логов счетчика клиентов.
+        for log in customer_counter:
+            if "timestamp" in log:
+                log_time = self.decode_datetime(log["timestamp"])
 
-    def get_visitors_in():
-        return self.visitors_in
+                if interval_start <= log_time <= interval_stop:
+                    self.visitors_in += log.get("visitors_in", 0)
+                    self.visitors_out += log.get("visitors_out", 0)
 
-    def get_visitors_out():
-        return self.visitors_out
+        return True
+
+    def decode_datetime(self, date_string): return datetime.fromisoformat(date_string)
+
+    def get_total_revenue(self): return self.total_revenue
+    def get_receipts_count(self): return self.get_receipts_count
+
+    def get_visitors_in(self): return self.visitors_in
+    def get_visitors_out(self): return self.visitors_out
+
+    def get_interval_start(self): return self.interval_start
+    def get_interval_stop(self): return self.interval_stop
