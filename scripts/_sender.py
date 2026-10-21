@@ -2,19 +2,24 @@ from datetime import datetime
 import time
 import requests
 
-import aggregator
+from aggregator import Aggregator
 
-SERVER_URL = "https://127.0.0.1:"
+SERVER_URL = "http://127.0.0.1:41759"
 DEVICE_ID = "0"
-INTERVAL_MINUTES = 5
+INTERVAL_MINUTES = 0.5
 
 def main():
     try:
         print(f"Скрипт отправки данных на удаленный сервер запущен. Отправка каждые {INTERVAL_MINUTES} минут.")
 
+        aggregator = Aggregator()
+
         while True:
             # 5 минут
             time.sleep(INTERVAL_MINUTES * 60)
+
+            #
+            aggregator.aggregate(datetime.now())
 
             #
             payload = {
@@ -23,16 +28,16 @@ def main():
                     "subversion": 0
                 },
                 "device_id": DEVICE_ID,
-                "interval_start": str(datetime.now()),
-                "interval_end": str(datetime.now()),
+                "interval_start": str(),
+                "interval_end": str(),
                 "data": {
                     "visitors_in": 0,
                     "visitors_out": 0,
-                    "receipts_count": 0,
-                    "total_revenue": 0
+                    "receipts_count": aggregator.get_receipts_count(),
+                    "total_revenue": aggregator.get_total_revenue()
                 },
                 "diagnostic": {
-                    "device_state": "OK"
+                    "device_state": ""
                 }
             }
 

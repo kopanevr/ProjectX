@@ -53,7 +53,7 @@
 ```bash
 curl -X POST "http://X.X.X.X:X/receipts" \
     -H "Content-type: application/json" \
-    -d '{"receipt_id": "X", "total_amount": X}'
+    -d '{"receipt_id": "X", "total_revenue": X}'
 ```
 
 Для проверки работоспособности и корректности отправки данных на удаленный сервер выполните запуск скрипта [test.py](scripts/test.py).
