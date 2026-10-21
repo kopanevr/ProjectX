@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 import requests
 
 from aggregator import Aggregator
 from device_state_checker import Device_state_checker
 
-SERVER_URL = "http://127.0.0.1:41759"
+SERVER_URL = "http://127.0.0.1:41473"
 DEVICE_ID = "0"
 INTERVAL_MINUTES = 0.5
 
@@ -17,13 +17,15 @@ def main():
         device_state_checker = Device_state_checker()
 
         while True:
-            interval_start = datetime.now()
+            interval_start = datetime.now(timezone.utc)
 
             # 5 минут
             time.sleep(INTERVAL_MINUTES * 60)
 
             #
-            aggregator.aggregate(datetime.fromisoformat("026-10-21T07:08:25.000000+00:00"), datetime.fromisoformat("026-10-21T07:08:30.000000+00:00"))
+            if not aggregator.aggregate(interval_start, datetime.now(timezone.utc)):
+                print(f"Ошибка агрегации данных.")
+                return
 
             #
             payload = {

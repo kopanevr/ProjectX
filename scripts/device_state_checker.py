@@ -3,4 +3,6 @@ class Device_state_checker:
         pass
 
     def get_current_state(self):
-        return ""
+        current_state = ""
+
+        return current_state

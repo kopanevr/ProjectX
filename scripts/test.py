@@ -29,7 +29,7 @@ class Model(BaseModel):
 @app.post(path="/")
 async def receive_data(data: Model):
     try:
-        print(f"[{datetime.now()}] Данные от устройства c id {data.device_id} успешно получены!")
+        print(f"[{datetime.now()}] Данные от устройства c id {data.device_id} успешно получены: {data.model_dump_json()}")
 
         return {}
 
