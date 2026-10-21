@@ -5,7 +5,7 @@ import requests
 import aggregator
 
 SERVER_URL = "https://127.0.0.1:"
-DEVICE_ID = ""
+DEVICE_ID = "0"
 INTERVAL_MINUTES = 5
 
 def main():

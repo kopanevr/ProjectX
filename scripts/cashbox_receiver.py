@@ -11,7 +11,7 @@ app = FastAPI()
 # Путь к файлу.
 LOG_FILE_PATH = Path("/tmp/blueberry_logs/cashbox_raw.blueberry_retail.log")
 # Путь к временному файлу.
-TEMP_LOG_FILE_PATH = Path("/tmp/blueberry_logs/cashbox_raw.blueberry_retail.log.temp")
+TEMP_LOG_FILE_PATH = LOG_FILE_PATH.with_suffix(".tmp")
 
 #
 os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
