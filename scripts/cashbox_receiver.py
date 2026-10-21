@@ -10,6 +10,8 @@ app = FastAPI()
 
 # Путь к файлу.
 LOG_FILE_PATH = Path("/tmp/blueberry_logs/cashbox_raw.blueberry_retail.log")
+# Путь к временному файлу.
+TEMP_LOG_FILE_PATH = Path("/tmp/blueberry_logs/cashbox_raw.blueberry_retail.log.temp")
 
 #
 os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
@@ -28,8 +30,9 @@ async def receive_receipt(receipt: ReceiptModel):
         }
 
         #
-        with open(LOG_FILE_PATH, "a", encoding="utf-8") as f:
+        with open(TEMP_LOG_FILE_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(log_entry) + "\n")
+        os.replace(TEMP_LOG_FILE_PATH, LOG_FILE_PATH)
 
         print(f"[{datetime.now()}] Чек с id {receipt.receipt_id} на сумму {receipt.total_revenue} рублей успешно записан!")
 
