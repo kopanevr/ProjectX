@@ -3,6 +3,7 @@ import time
 import requests
 
 from aggregator import Aggregator
+from device_state_checker import Device_state_checker
 
 SERVER_URL = "http://127.0.0.1:41759"
 DEVICE_ID = "0"
@@ -22,7 +23,7 @@ def main():
             time.sleep(INTERVAL_MINUTES * 60)
 
             #
-            aggregator.aggregate(interval_start, datetime.now())
+            aggregator.aggregate(datetime.fromisoformat("026-10-21T07:08:25.000000+00:00"), datetime.fromisoformat("026-10-21T07:08:30.000000+00:00"))
 
             #
             payload = {
