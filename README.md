@@ -62,7 +62,32 @@ curl -X POST "http://X.X.X.X:X/receipts" \
 
 ```bash
 
+
 ```
 
+Устройство с периодичностью 5 минут производит отправку агрегированных данных на удаленный сервер.
+
+**Шаблон данных передаваемых на удаленный сервер:**
+
+```json
+{
+    "meta": {
+        "version": X,
+        "subversion": X
+    },
+    "device_id": ,
+    "interval_start": X,
+    "interval_end": X,
+    "data": {
+        "visitors_in": X,
+        "visitors_out": X,
+        "receipts_count": X,
+        "total_revenue": X
+    },
+    "diagnostic": {
+        "device_state": X
+    }
+}
+```
 
 ##
