@@ -5,10 +5,17 @@
 #include <string>
 #include <chrono>
 #include <stop_token>
+#include <format>
+#include <ostream>
 
 //
 
 #include "Logger.hpp"
+
+//
+
+#include "Timer.hpp"
+#include "TimerManager.hpp"
 
 //
 
@@ -184,8 +191,36 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
   }
 }
 
-/// @brief Поток записи в базу данных.
+/// @brief Поток записи логов.
 /// @param
 void Pipeline::logWriterWorker(std::stop_token stoken) {
-  //
+  const std::string LOG_FILE_PATH = "/tmp/blueberry_logs/customer_counter_raw.blueberry_retail.log";
+  const std::string TEMP_LOG_FILE_PATH = LOG_FILE_PATH + ".tmp";
+
+  const auto WRITE_PERIOD = std::chrono::minutes(1); // 1 МИН
+
+  Timer timer{};
+  TimerManager tm{};
+
+  while(!stoken.stop_requested()) {
+    if (tm.isFinished(timer)) {
+      tm.start(timer, WRITE_PERIOD);
+
+      auto now = std::chrono::system_clock::now();
+
+      std::string iso_string = std::format("{}", now);
+
+      std::string payload = std::format(
+        "{ \
+          "timestamp": "{0}",
+          "visitors_in": "{1}",
+          "visitors_out": "{2}",
+        "}",
+
+        iso_string
+      );
+
+
+    }";
+  }
 }
