@@ -5,7 +5,8 @@
 #include <string>
 #include <chrono>
 #include <format>
-#include <ostream>
+#include <fstream>
+#include <filesystem>
 #include <stop_token>
 #include <condition_variable>
 
@@ -192,13 +193,18 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
 /// @brief Поток записи логов.
 /// @param
 void Pipeline::logWriterWorker(std::stop_token stoken) {
-  const std::string LOG_FILE_PATH = R"(/tmp/blueberry_logs/customer_counter_raw.blueberry_retail.log)";
-  const std::string TEMP_LOG_FILE_PATH = LOG_FILE_PATH + ".tmp";
+  const std::filesystem::path LOG_FILE_DIR = "/tmp/blueberry_logs";
+  const std::filesystem::path LOG_FILE_PATH = LOG_FILE_DIR / "customer_counter_raw.blueberry_retail.log";
+  const std::filesystem::path TEMP_LOG_FILE_PATH = std::filesystem::path(LOG_FILE_PATH) += ".tmp";
 
   const auto PERIOD = std::chrono::minutes(1); // 1 МИН
 
   std::condition_variable_any cv{};
   std::mutex mutex{};
+
+  if (!std::filesystem::create_directories(LOG_FILE_DIR)) {
+    //
+  }
 
   while(!stoken.stop_requested()) {
     std::unique_lock<std::mutex> lock(mutex);
@@ -211,6 +217,27 @@ void Pipeline::logWriterWorker(std::stop_token stoken) {
       iso_string,
       log_.visitors_in,
       log_.visitors_out
-    );
+    ) + "\n";
+
+    std::error_code err{};
+
+    if (std::filesystem::exists(LOG_FILE_PATH)) {
+      std::filesystem::copy_file(
+        LOG_FILE_PATH,
+        TEMP_LOG_FILE_PATH,
+        std::filesystem::copy_options::overwrite_existing,
+        err
+      );
+    }
+
+    // Запись в файл.
+    {
+      std::ofstream file(TEMP_LOG_FILE_PATH, std::ios::app);
+      if (file.is_open()) {
+        file.write(payload.data(), payload.size());
+      }
+    }
+
+    std::filesystem::rename(TEMP_LOG_FILE_PATH, LOG_FILE_PATH, err);
   }
 }
