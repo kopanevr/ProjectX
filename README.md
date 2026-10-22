@@ -1,10 +1,8 @@
 # Eye Retail Project
 
-**Целью данного проекта является разработка работающего прототипа устройства (MVP) для проверки ключевых гипотез, в связи с чем строгое следование формальным стандартам проектирования на данном этапе не предусмотрено.**
-
 **Проект находится на стыке сфер розничной торговли среднего формата и технологий компьютерного зрения.**
 
-**Вдохновением для проекта стал известный проект [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
+**Вдохновением для проекта послужил известный проект [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
 
 ### English
 
@@ -12,9 +10,17 @@
 
 **Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods) project.**
 
-## Цель
+## Цель (Goal)
 
-Упросить и
+**Оптимизировать взаимодействие менеджмента с аналитикой заведения для среднего формата, открыв возможность оперативно отслеживать ключевые метрики в реальном времени и прогнозы по полученным данным метрик.**
+
+### English
+
+**The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.**
+
+## Задачи
+
+Задачей данного проекта является разработка работающего прототипа устройства (MVP) для проверки ключевых гипотез, в связи с чем строгое следование формальным стандартам проектирования на данном этапе не предусмотрено.
 
 ## Зависимости
 
@@ -43,11 +49,15 @@
 [ИНФО] [Inference Engine] Имя выхода: output0
 [ИНФО] [Inference Engine] Запуск десериализации движка...
 [ИНФО] [Inference Engine] Размер файла движка: 219626764 байт.
+
+
 ```
 
-## Описание (Descriptions)
+## Описание (Description)
 
 Для обнаружения объектов применяется модель [YOLO26s](https://huggingface.co/Ultralytics/YOLO26).
+
+
 
 Для проверки работоспособности и корректности отправки данных на удаленный сервер выполните запуск скрипта [test.py](scripts/test.py).
 
@@ -88,7 +98,7 @@
 **Формат данных записываемых при закрытии чека:**
 
 ```json
-{"timestamp": "2026-10-21T09::00.00UTC", "receipt_id": 0, "total_revenue": 0.0}
+{"timestamp": "2026-10-21T09::00.00Z", "receipt_id": 0, "total_revenue": 0.0}
 ```
 **Ключевые параметры:**
 
@@ -110,14 +120,14 @@ curl -X POST "http://X.X.X.X:X/receipts" \
 **Формат данных записываемых счетчиком клиентов:**
 
 ```json
-{"timestamp": "2026-10-22T09:16:39.046052064UTC", "visitors_in": 0, "visitors_out": 0}
+{"timestamp": "2026-10-22T09:16:39.00.00Z", "visitors_in": 0, "visitors_out": 0}
 ```
-> [!WARNING]
-> Все `.log` файлы записываются во временный каталог `/tmp` Linux.
-
 **Ключевые параметры:**
 
 * **visitors_in:** Количество клиентов вошедших в заведение.
 * **visitors_out:** Количество клиентов вышедших из заведения.
 
-##
+> [!WARNING]
+> Все `.log` файлы записываются во временный каталог Linux `/tmp`.
+
+## Нерешенные проблемы
