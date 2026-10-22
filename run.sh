@@ -1,44 +1,43 @@
 #! /bin/bash
 
-BASE_DIR="/"
-PID_DIR="$BASE_DIR/pids"
-LOGS_DIR="$BASE_DIR/logs"
+PID_DIR="pids"
+LOGS_DIR="temp/logs"
 
 start_services() {
   echo "=== Запуск системы ==="
 
+  mkdir -p "$PID_DIR" "$LOGS_DIR"
+
   # 1. Счетчик клиентов.
-  if [ -f "$BASE_DIR/core/bin/core" ]; then
-    echo "[1/3] Запуск С++ ядра..."
-    cd "$BASE_DIR" && ./bin/core.elf
+  if [ -f "core/bin/core" ]; then
+    echo "[1/3] Запуск счетчика клиентов..."
+    touch "$LOGS_DIR/costumer_counter.log"
+    (cd "core/bin" && ./core) > "$LOGS_DIR/costumer_counter.log" &
     echo $! > "$PID_DIR/core.pid"
   else
-    echo "Ошибка: Core ELF не найден."
+    echo "Ошибка: Исполняемый файл счетчика клиентов не найден."
     exit 1
   fi
 
-  TIME=2s
-
-  echo "Ожидание $TIME сек..."
-  sleep $TIME
-
   # 2. Скрипт записи чека.
-  if [ -f "BASE_DIR/scripts/cashbox_receiver.py" ]; then
+  if [ -f "scripts/cashbox_receiver.py" ]; then
     echo "[2/3] Запуск скрипта записи чека..."
-    python3 ./scripts/cboxreceiver.py
+    touch "$LOGS_DIR/cashbox_receiver.log"
+    (cd "scripts" && python3 ./cashbox_receiver.py) > "$LOGS_DIR/cashbox_receiver.log" &
     echo $! > "$PID_DIR/cboxreceiver.pid"
   else
     echo "Ошибка: Файл скрипта записи чека не найден."
     exit 1
   fi
 
-  # 3. Скрипт .
-  if [ -f "BASE_DIR/scripts/.py" ]; then
-    echo "[3/3] Запуск скрипта агрегатора..."
-    python3 ./scripts/.py
-    echo $! > "$PID_DIR/.pid"
+  # 3. Скрипт отправки данных на удаленный сервер.
+  if [ -f "scripts/data_sender.py" ]; then
+    echo "[3/3] Запуск скрипта отправки данных на удаленный сервер..."
+    touch "$LOGS_DIR/data_sender.log"
+    (cd "scripts" && python3 ./data_sender.py) > "$LOGS_DIR/data_sender.log" &
+    echo $! > "$PID_DIR/dsender.pid"
   else
-    echo "Ошибка: Файл скрипта агрегатора не найден."
+    echo "Ошибка: Файл скрипта отправки данных на удаленный сервер не найден."
     exit 1
   fi
 
@@ -48,7 +47,7 @@ start_services() {
 stop_services() {
   echo "=== Остановка системы ==="
 
-  for service in core cboxreceiver ; do
+  for service in core cboxreceiver dsender; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then
@@ -64,7 +63,7 @@ stop_services() {
 check_status() {
   echo "=== Статус ==="
 
-  for service in core cboxreceiver ; do
+  for service in core cboxreceiver dsender; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
       if kill -0 $PID; then

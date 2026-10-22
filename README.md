@@ -6,9 +6,9 @@
 
 ### English
 
-**Retail-focused computer vision MVP project.**
+Retail-focused computer vision MVP project.
 
-**Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods) project.**
+Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods) project.
 
 ## Цель (Goal)
 
@@ -16,7 +16,7 @@
 
 ### English
 
-**The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.**
+The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.
 
 ## Задачи
 

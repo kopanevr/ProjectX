@@ -1,6 +1,8 @@
 build/
 thirdParty/
 models/*.engine
+pids/
 scripts/__pycache__/
+temp/logs
 
 .clang-format
