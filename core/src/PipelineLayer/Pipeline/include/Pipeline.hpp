@@ -8,6 +8,7 @@
 //
 
 #include <string>
+#include <mutex>
 #include <memory>
 #include <thread>
 
@@ -92,6 +93,9 @@ private:
   Queue<std::unique_ptr<FrameDisplayData>> displayQueue_;
   /// @brief
   Queue<std::unique_ptr<FrameDisplayData>> freeDisplayQueue_;
+
+  /// @brief
+  std::mutex mutex_;
 
   /// @brief
   struct {

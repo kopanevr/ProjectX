@@ -141,7 +141,7 @@ void Pipeline::videoCaptureWorker(std::stop_token stoken) {
   cv::VideoCapture cap(0);
 
   if (!cap.isOpened()) {
-    ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры.");
+    ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры!");
     videoCaptureThread_.request_stop();
     return;
   }
@@ -199,24 +199,33 @@ void Pipeline::logWriterWorker(std::stop_token stoken) {
 
   const auto PERIOD = std::chrono::minutes(1); // 1 МИН
 
+  size_t visitors_in{};
+  size_t visitors_out{};
+
   std::condition_variable_any cv{};
-  std::mutex mutex{};
 
   if (!std::filesystem::create_directories(LOG_FILE_DIR)) {
     //
   }
 
   while(!stoken.stop_requested()) {
-    std::unique_lock<std::mutex> lock(mutex);
-    cv.wait_for(lock, stoken, PERIOD, [&]() -> bool { return stoken.stop_requested(); });
+    // Получение данных.
+    {
+      std::unique_lock<std::mutex> lock(mutex_);
+      cv.wait_for(lock, stoken, PERIOD, [&]() -> bool { return stoken.stop_requested(); });
+
+      visitors_in = log_.visitors_in;
+      visitors_out = log_.visitors_out;
+    }
+
     const auto now = std::chrono::system_clock::now();
     const auto iso_string = std::format("{:%FT%T%Z}", now);
 
     const auto payload = std::format(
       R"({{"timestamp": "{}", "visitors_in": {}, "visitors_out": {}}})",
       iso_string,
-      log_.visitors_in,
-      log_.visitors_out
+      visitors_in,
+      visitors_out
     ) + "\n";
 
     std::error_code err{};
@@ -235,6 +244,8 @@ void Pipeline::logWriterWorker(std::stop_token stoken) {
       std::ofstream file(TEMP_LOG_FILE_PATH, std::ios::app);
       if (file.is_open()) {
         file.write(payload.data(), payload.size());
+      } else {
+        ERROR(layerName_, " ", "Не удалось записать лог в файл!");
       }
     }
 
