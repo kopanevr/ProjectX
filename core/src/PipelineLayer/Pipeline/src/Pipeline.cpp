@@ -4,18 +4,14 @@
 
 #include <string>
 #include <chrono>
-#include <stop_token>
 #include <format>
 #include <ostream>
+#include <stop_token>
+#include <condition_variable>
 
 //
 
 #include "Logger.hpp"
-
-//
-
-#include "Timer.hpp"
-#include "TimerManager.hpp"
 
 //
 
@@ -201,22 +197,20 @@ void Pipeline::logWriterWorker(std::stop_token stoken) {
 
   const auto PERIOD = std::chrono::minutes(1); // 1 МИН
 
-  Timer timer{};
-  TimerManager tm{};
+  std::condition_variable_any cv{};
+  std::mutex mutex{};
 
   while(!stoken.stop_requested()) {
-    if (!tm.isStarted(timer) || tm.isFinished(timer)) {
-      tm.start(timer, PERIOD);
+    std::unique_lock<std::mutex> lock(mutex);
+    cv.wait_for(lock, stoken, PERIOD, [&]() -> bool { return stoken.stop_requested(); });
+    const auto now = std::chrono::system_clock::now();
+    const auto iso_string = std::format("{:%FT%T%Z}", now);
 
-      const auto now = std::chrono::system_clock::now();
-      const auto iso_string = std::format("{:%FT%T%Z}", now);
-
-      const auto payload = std::format(
-        R"({{"timestamp": "{}", "visitors_in": {}", "visitors_out": {}}})",
-        iso_string,
-        log_.visitors_in,
-        log_.visitors_out
-      );
-    };
+    const auto payload = std::format(
+      R"({{"timestamp": "{}", "visitors_in": {}, "visitors_out": {}}})",
+      iso_string,
+      log_.visitors_in,
+      log_.visitors_out
+    );
   }
 }

@@ -35,12 +35,10 @@ public:
   }
 
   /// @brief Удаляет первый элемент.
-  /// @param stop_token Токен проверки.
-  bool pop(T &data, std::stop_token stop_token) {
+  /// @param stoken Токен проверки.
+  bool pop(T &data, std::stop_token stoken) {
     std::unique_lock<std::mutex> lock(mutex_);
-    cv_.wait(lock, stop_token, [this]() -> bool {
-      return queue_.empty();
-    });
+    cv_.wait(lock, stoken, [this]() -> bool { return queue_.empty(); });
     if (queue_.empty()) {
       return false;
     }
