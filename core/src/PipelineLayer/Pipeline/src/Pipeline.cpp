@@ -28,16 +28,16 @@
 /// @param inputName Имя входа.
 /// @param outputName Имя выхода.
 bool Pipeline::start(const std::string &filePath, const std::string &inputName, const std::string &outputName) {
-  INFO(layerName_, " ", "Инициализация C++ ядра...");
+  INFO(layerName_, " ", "Инициализация счетчика клиентов...");
   if (!inferenceEngine_->initialize(filePath, inputName, outputName) || !logWriter_->initialize()) {
     return false;
   }
 
-  INFO(layerName_, " ", "Инициализация C++ ядра успешно завершена!");
+  INFO(layerName_, " ", "Инициализация счетчика клиентов успешно завершена!");
 
-  videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
+  // videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
-  inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
+  // inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
 
   logWriterThread_ = std::jthread(&Pipeline::logWriterWorker, this);
 
@@ -132,6 +132,8 @@ void Pipeline::stop() {
   videoCaptureThread_.request_stop();
 
   inferenceThread_.request_stop();
+
+  logWriterThread_.request_stop();
 }
 
 /// @brief Поток захвата видео.
@@ -194,33 +196,27 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
 /// @brief Поток записи логов.
 /// @param
 void Pipeline::logWriterWorker(std::stop_token stoken) {
-  const std::string LOG_FILE_PATH = "/tmp/blueberry_logs/customer_counter_raw.blueberry_retail.log";
+  const std::string LOG_FILE_PATH = R"(/tmp/blueberry_logs/customer_counter_raw.blueberry_retail.log)";
   const std::string TEMP_LOG_FILE_PATH = LOG_FILE_PATH + ".tmp";
 
-  const auto WRITE_PERIOD = std::chrono::minutes(1); // 1 МИН
+  const auto PERIOD = std::chrono::minutes(1); // 1 МИН
 
   Timer timer{};
   TimerManager tm{};
 
   while(!stoken.stop_requested()) {
-    if (tm.isFinished(timer)) {
-      tm.start(timer, WRITE_PERIOD);
+    if (!tm.isStarted(timer) || tm.isFinished(timer)) {
+      tm.start(timer, PERIOD);
 
-      auto now = std::chrono::system_clock::now();
+      const auto now = std::chrono::system_clock::now();
+      const auto iso_string = std::format("{:%FT%T%Z}", now);
 
-      std::string iso_string = std::format("{}", now);
-
-      std::string payload = std::format(
-        "{ \
-          "timestamp": "{0}",
-          "visitors_in": "{1}",
-          "visitors_out": "{2}",
-        "}",
-
-        iso_string
+      const auto payload = std::format(
+        R"({{"timestamp": "{}", "visitors_in": {}", "visitors_out": {}}})",
+        iso_string,
+        log_.visitors_in,
+        log_.visitors_out
       );
-
-
-    }";
+    };
   }
 }

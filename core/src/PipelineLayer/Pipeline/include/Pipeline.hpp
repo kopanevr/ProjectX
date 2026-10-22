@@ -93,4 +93,10 @@ private:
   /// @brief
   Queue<std::unique_ptr<FrameDisplayData>> freeDisplayQueue_;
 
+  /// @brief
+  struct {
+    size_t visitors_in{};
+    size_t visitors_out{};
+  } log_;
+
 };

@@ -31,7 +31,7 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
-  auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(
+  const auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(
       std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()),
       std::unique_ptr<LogWriter>(new (std::nothrow) LogWriter())));
   if (!pipeline) {
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Запуск конвейера.
-  if (pipeline->start("../../../models/yolo26s.engine", "images", "output0")) {
+  if (!pipeline->start("../../../models/yolo26s.engine", "images", "output0")) {
     return EXIT_FAILURE;
   }
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   std::stop_token stoken = source.get_token();
 
   while (!stoken.stop_requested()) {
-#if(1)
+#if(0)
     pipeline->process(source, stoken);
 #endif
   }
