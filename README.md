@@ -1,8 +1,8 @@
 # Eye Retail Project
 
-**Проект находится на стыке сфер розничной торговли среднего формата, ИИ и технологий компьютерного зрения.**
+**Проект объединяет технологии искусственного интеллекта, компьютерного зрения и решения для розничной торговли среднего формата.**
 
-**Вдохновением для проекта послужил известный проект [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
+**Технологическим ориентиром при создании концепции послужила экосистема [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
 
 ### English
 
