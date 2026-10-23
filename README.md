@@ -4,8 +4,6 @@
 
 **Технологическим ориентиром при создании концепции послужила экосистема [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
 
-### English
-
 Retail-focused computer vision MVP project.
 
 Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods) project.
@@ -31,8 +29,6 @@ Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fre
 **Пример дайджеста:** `«Итоги недели: Конверсия составила 15.0%. +1.5% к прошлой неделе. Самый эффективный день — четверг. Акция на ... сработала отлично! Рекомендую ...»`
 
 Вышепредставленные примеры показывают всего лишь направление мысли, а не итог работы системы.
-
-### English
 
 The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.
 
