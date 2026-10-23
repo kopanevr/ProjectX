@@ -12,7 +12,7 @@ start_services() {
   if [ -f "core/bin/core" ]; then
     echo "[1/3] Запуск счетчика клиентов..."
     touch "$LOGS_DIR/costumer_counter.log"
-    (cd "core/bin" && ./core) > "$LOGS_DIR/costumer_counter.log" &
+    (cd "core/bin" && ./core) > "$LOGS_DIR/costumer_counter.log" 2>&1 &
     echo $! > "$PID_DIR/core.pid"
   else
     echo "Ошибка: Исполняемый файл счетчика клиентов не найден."
@@ -23,7 +23,7 @@ start_services() {
   if [ -f "scripts/cashbox_receiver.py" ]; then
     echo "[2/3] Запуск скрипта записи чека..."
     touch "$LOGS_DIR/cashbox_receiver.log"
-    (cd "scripts" && python3 ./cashbox_receiver.py) > "$LOGS_DIR/cashbox_receiver.log" &
+    (cd "scripts" && python3 ./cashbox_receiver.py) > "$LOGS_DIR/cashbox_receiver.log" 2>&1 &
     echo $! > "$PID_DIR/cboxreceiver.pid"
   else
     echo "Ошибка: Файл скрипта записи чека не найден."
@@ -34,7 +34,7 @@ start_services() {
   if [ -f "scripts/data_sender.py" ]; then
     echo "[3/3] Запуск скрипта отправки данных на удаленный сервер..."
     touch "$LOGS_DIR/data_sender.log"
-    (cd "scripts" && python3 ./data_sender.py) > "$LOGS_DIR/data_sender.log" &
+    (cd "scripts" && python3 ./data_sender.py) > "$LOGS_DIR/data_sender.log" 2>&1 &
     echo $! > "$PID_DIR/dsender.pid"
   else
     echo "Ошибка: Файл скрипта отправки данных на удаленный сервер не найден."
@@ -50,7 +50,7 @@ stop_services() {
   for service in core cboxreceiver dsender; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
-      if kill -0 $PID; then
+      if kill -0 $PID; then # Проверка существования процесса.
         echo "Остановка $service (PID: $PID)"
         kill 15 $PID
         sleep 1s
@@ -66,7 +66,7 @@ check_status() {
   for service in core cboxreceiver dsender; do
     if [ -f "$PID_DIR/$service.pid" ]; then
       PID=$(cat "$PID_DIR/$service.pid")
-      if kill -0 $PID; then
+      if kill -0 $PID; then # Проверка существования процесса.
         echo -e " $service: \033[0;32mРАБОТАЕТ\033[0m (PID: $PID)" # Зелёный.
       else
         echo -e " $service: \033[0;31mУПАЛ\033[0m" # Красный.

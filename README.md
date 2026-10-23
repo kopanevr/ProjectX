@@ -40,6 +40,16 @@ The goal is to optimize the interaction between management and analytics for med
 
 ## Результат
 
+**Пример лога при успешном запуске системы:**
+
+```bash
+=== Запуск системы ===
+[1/3] Запуск счетчика клиентов...
+[2/3] Запуск скрипта записи чека...
+[3/3] Запуск скрипта отправки данных на удаленный сервер...
+Система успешно запущена!
+```
+
 **Пример лога при успешном запуске пайплайна счетчика клиентов:**
 
 ```text
@@ -56,7 +66,6 @@ The goal is to optimize the interaction between management and analytics for med
 ## Описание (Description)
 
 Для обнаружения объектов применяется модель [YOLO26s](https://huggingface.co/Ultralytics/YOLO26).
-
 
 
 Для проверки работоспособности и корректности отправки данных на удаленный сервер выполните запуск скрипта [test.py](scripts/test.py).
