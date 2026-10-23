@@ -32,9 +32,9 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 
   INFO(layerName_, " ", "Инициализация счетчика клиентов успешно завершена!");
 
-  // videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
+  videoCaptureThread_ = std::jthread(&Pipeline::videoCaptureWorker, this);
 
-  // inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
+  inferenceThread_ = std::jthread(&Pipeline::inferenceWorker, this);
 
   logWriterThread_ = std::jthread(&Pipeline::logWriterWorker, this);
 
@@ -44,6 +44,11 @@ bool Pipeline::start(const std::string &filePath, const std::string &inputName, 
 /// @brief Процесс.
 /// @brief
 void Pipeline::process(std::stop_source source, std::stop_token stoken) {
+  size_t visitors_in{};
+  size_t visitors_out{};
+
+  //
+
   const cv::Scalar color(242., 242., 247.); // gray
 
   /*
@@ -52,7 +57,8 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
   const cv::Scalar color(231., 18., 77.); // pink
   */
 
-  const int thickness = 1;
+  const int recLineThickness = 1;
+  const int textThickness = 1;
   const int lineType = cv::LINE_4;
   const int fontFace = cv::FONT_HERSHEY_SIMPLEX;
 
@@ -76,7 +82,7 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
         {box.x1, box.y1},
         {box.x2, box.y2},
         color,
-        thickness,
+        recLineThickness,
         lineType
       );
     }
@@ -84,30 +90,60 @@ void Pipeline::process(std::stop_source source, std::stop_token stoken) {
     // Отрисовка текста.
     cv::putText(
       displayData->data.data,
-      "Версия: ",
+      "Версия ПО: ",
       {10, 10},
       fontFace,
-      1.,
+      textThickness,
       color
     );
 
     // Отрисовка текста.
     cv::putText(
       displayData->data.data,
-      "Подверсия: ",
+      "Подверсия ПО: ",
       {10, 20},
       fontFace,
-      1.,
+      textThickness,
       color
     );
 
     // Отрисовка текста.
     cv::putText(
       displayData->data.data,
-      "FPS: " + std::to_string(fps),
+      "Кадр/секунда: " + std::to_string(fps),
       {10, 40},
       fontFace,
-      1.,
+      textThickness,
+      color
+    );
+
+    // Отрисовка текста.
+    cv::putText(
+      displayData->data.data,
+      "Вошло: ",
+      {10, 60},
+      fontFace,
+      textThickness,
+      color
+    );
+
+    // Отрисовка текста.
+    cv::putText(
+      displayData->data.data,
+      "Вышло: " + std::to_string(visitors_out),
+      {10, 70},
+      fontFace,
+      textThickness,
+      color
+    );
+
+    // Отрисовка текста.
+    cv::putText(
+      displayData->data.data,
+      ": " + std::to_string(visitors_out),
+      {10, 10},
+      fontFace,
+      textThickness,
       color
     );
 
@@ -138,7 +174,11 @@ void Pipeline::stop() {
 void Pipeline::videoCaptureWorker(std::stop_token stoken) {
   long long index{};
 
+#if (1)
+  cv::VideoCapture cap("../doc/videos/test.mp4");
+#else
   cv::VideoCapture cap(0);
+#endif
 
   if (!cap.isOpened()) {
     ERROR(layerName_, " ", "Не удалось инициализировать захват видео c камеры!");

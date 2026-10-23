@@ -5,7 +5,7 @@ import requests
 from aggregator import Aggregator
 from device_state_checker import Device_state_checker
 
-SERVER_URL = "http://127.0.0.1:39263"
+SERVER_URL = "https://127.0.0.1:39263"
 DEVICE_ID = "0"
 INTERVAL_MINUTES = 0.5
 
