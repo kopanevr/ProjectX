@@ -26,7 +26,7 @@ class Aggregator:
 
             return current_index, data
 
-        except FileNoFoundError:
+        except FileNotFoundError:
             # 50 МС
             time.sleep(0.05)
 
@@ -41,7 +41,7 @@ class Aggregator:
 
                     return current_index, data
 
-            except FileNoFoundError:
+            except FileNotFoundError:
                 print(f"Ошибка чтения файла: {filepath}")
                 return current_index, []
 

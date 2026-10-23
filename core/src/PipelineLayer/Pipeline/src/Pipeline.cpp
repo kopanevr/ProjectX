@@ -219,7 +219,7 @@ void Pipeline::logWriterWorker(std::stop_token stoken) {
     }
 
     const auto now = std::chrono::system_clock::now();
-    const auto iso_string = std::format("{:%FT%T%Z}", now);
+    const auto iso_string = std::format("{:%FT%T%z}", now);
 
     const auto payload = std::format(
       R"({{"timestamp": "{}", "visitors_in": {}, "visitors_out": {}}})",

@@ -5,9 +5,9 @@ import requests
 from aggregator import Aggregator
 from device_state_checker import Device_state_checker
 
-SERVER_URL = "http://127.0.0.1:"
+SERVER_URL = "http://127.0.0.1:46801"
 DEVICE_ID = "0"
-INTERVAL_MINUTES = 5
+INTERVAL_MINUTES = 0.5
 
 def main():
     try:
@@ -50,9 +50,9 @@ def main():
             response = requests.post(SERVER_URL, json=payload, timeout=10)
 
             if response.status_code == 200:
-                print(f"Данные от устройства c id {DEVICE_ID} на удаленный сервер успешно отправлены: {response.json()}")
+                print(f"[{datetime.now()}] Данные от устройства c id {DEVICE_ID} на удаленный сервер успешно отправлены: {response.json()}")
             else:
-                print(f"Ошибка удаленного сервера {response.status_code}: {response.text}")
+                print(f"[{datetime.now()}] Ошибка удаленного сервера {response.status_code}: {response.text}")
 
     except Exception as e:
         print(f"Ошибка отправки данных на сервер: {e}")
