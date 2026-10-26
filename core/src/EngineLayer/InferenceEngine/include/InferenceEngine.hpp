@@ -20,20 +20,6 @@
 
 //
 
-#include "NvInfer.h"
-
-//
-
-/// @brief
-class InferenceLogger : public nvinfer1::ILogger {
-public:
-  void log(Severity severity, nvinfer1::AsciiChar const *msg) noexcept override {
-    //
-  }
-};
-
-//
-
 /// @brief
 class IInferenceEngine {
 public:
@@ -75,26 +61,8 @@ public:
   bool run(const FrameData &data, std::vector<BoundingBox> &boxes) override;
 
 private:
-  /// @brief Загрузка движка.
-  /// @param fileName
-  std::shared_ptr<nvinfer1::ICudaEngine> loadEngine(const std::string &fileName);
-  /// @brief
-  bool createExecutionContext(std::shared_ptr<nvinfer1::ICudaEngine> engine);
-
-  /// @brief Выделение памяти на GPU.
-  bool allocateBuffers();
-  /// @brief Освобождение памяти на GPU.
-  void freeBuffers();
 
 private:
-  /// @brief
-  InferenceLogger inferenceLogger_;
-
-  /// @brief
-  std::unique_ptr<nvinfer1::IRuntime> runtime_;
-  /// @brief
-  std::unique_ptr<nvinfer1::IExecutionContext> executionContext_;
-
   /// @brief
   std::string inputName_;
   /// @brief
@@ -109,15 +77,3 @@ private:
   FrameDisplayData displayData_;
 
 };
-
-/// @brief Освобождение памяти  на GPU.
-inline void InferenceEngine::freeBuffers() {
-  if (deviceInput_) {
-    cudaFree(deviceInput_);
-    deviceInput_ = nullptr;
-  }
-  if (deviceOutput_) {
-    cudaFree(deviceOutput_);
-    deviceOutput_ = nullptr;
-  }
-}

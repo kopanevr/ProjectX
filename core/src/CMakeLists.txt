@@ -4,20 +4,16 @@ file(
   ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
 
-# Определение путей к TensorRT.
-set(TENSORRT_DIR "${CMAKE_SOURCE_DIR}/thirdParty/TensorRT-Enterprise-11.4.0.106-Linux-x86_64-cuda-13.4-Release-external/TensorRT-11.4.0.106")
-
 add_executable(core ${SOURCES})
 
 # Опции.
-option(USE_TENSORRT "Отладка." OFF)
+option(USE_HAILO "Отладка." OFF)
 
-if (USE_TENSORRT)
-  target_compile_definitions(core PRIVATE USE_TENSORRT)
+if (USE_HAILO)
+  target_compile_definitions(core PRIVATE USE_HAILO)
 endif()
 
 find_package(OpenCV 4 REQUIRED)
-find_package(CUDAToolkit  REQUIRED)
 
 target_include_directories(
   core PRIVATE
@@ -38,15 +34,10 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/LogWriter/include
 
   ${CMAKE_SOURCE_DIR}/Utilities/TimerManager/include
-
-  ${TENSORRT_DIR}/include
 )
 
 target_link_libraries(core PRIVATE
   ${OpenCV_LIBS}
-  CUDA::cudart
-
-  ${TENSORRT_DIR}/lib/libnvinfer.so
 )
 
 add_custom_command(
