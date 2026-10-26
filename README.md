@@ -4,17 +4,25 @@
 
 **An AI retail platform combining CV and LLMs for offline store conversion analysis.**
 
-**Вдохновением при создании концепции послужила экосистема [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
+**Вдохновением при создании концепции послужила экосистема офлайн-магазинов без очередей [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
 
 Retail-focused computer vision MVP project.
 
 Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods) project.
 
-**Сегмент:** Максимальный потенциал рынка: Кофейни, фастфуд. С меньшим потенциалом: Магазины одежды.
+|  |
+| :--: |
+| **Магазин Amazon Go в Сиэтле - [Источник](https://www.naughtydog.com/blog/the_last_of_us_part_ii_remastered_announcement)** |
+| ![1](/doc/images/1.jpg) |
+
+
+**Сегмент рынка:** Максимальный потенциал: Кофейни, фастфуд. С меньшим потенциалом: Магазины одежды.
 
 ## Цель (Goal)
 
-**Простая аналитика для среднего бизнеса. Менеджмент следит через Telegram-бот за метриками в реальном времени, получает прогнозы и важные уведомления. Система собирает регулярные дайджесты и понятно предоставляет простые ответы на любые вопросы по показателям.**
+Простая аналитика для среднего бизнеса. Менеджмент следит через Telegram-бот за метриками в реальном времени, получает прогнозы и важные уведомления. Система собирает регулярные дайджесты и понятно предоставляет простые ответы на любые вопросы по показателям.
+
+The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.
 
 **Пример уведомления:** `«Внимание! За последние 2 часа трафик на входе вырос в 2 раза.»` `«Внимание! Конверсия выросла на 2.0 % по сравнению с понедельником. Это связано с ... Рекомендую ...»`
 
@@ -31,8 +39,6 @@ Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fre
 **Пример дайджеста:** `«Итоги недели: Конверсия составила 15.5%. +1.5% к прошлой неделе. Самый эффективный день — четверг. Акция на ... сработала отлично! Рекомендую ...»`
 
 Вышепредставленные примеры показывают всего лишь направление мысли, а не итог работы системы.
-
-The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.
 
 ## Задачи
 
@@ -127,12 +133,13 @@ The goal is to optimize the interaction between management and analytics for med
 ```json
 {"timestamp": "2026-10-21T09:00:00Z", "receipt_id": 0, "total_revenue": 0.0}
 ```
+
 **Ключевые параметры:**
 
 * **receipt_id:** Идентификатор чека (ID).
 * **total_revenue:** Общая выручка.
 
-Для проверки работоспособности сервера и корректности записи чеков выполните POST-запрос с помощью утилиты curl.
+Текущий формат логирования можно расширить данными о сменщике и составе чека. Например, указывать, какой именно сотрудник закрыл чек, а также детализировать количество и наименование проданных товаров. Это сделает последующий анализ данных с помощью LLM более глубоким и емким.
 
 **Шаблон запроса:**
 
