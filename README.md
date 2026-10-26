@@ -4,7 +4,7 @@
 
 **An AI retail platform combining CV and LLMs for offline store conversion analysis.**
 
-**Вдохновением при создании концепции послужила экосистема офлайн-магазинов без очередей [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
+Вдохновением при создании концепции послужила экосистема офлайн-магазинов без очередей [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).
 
 Retail-focused computer vision MVP project.
 
@@ -12,7 +12,7 @@ Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fre
 
 |  |
 | :--: |
-| **Магазин Amazon Go в Сиэтле - [Источник](https://www.naughtydog.com/blog/the_last_of_us_part_ii_remastered_announcement)** |
+| **Магазин Amazon Go в Сиэтле - [Источник](https://www.mercurynews.com/2018/01/22/amazon-go-pushes-mediterranean-lamb-skips-the-chili-cheese-dogs-2)** |
 | ![1](/doc/images/1.jpg) |
 
 
