@@ -2,7 +2,7 @@
 
 **Проект объединяет технологии искусственного интеллекта, компьютерного зрения и решения для розничной торговли среднего формата.**
 
-**Технологическим ориентиром при создании концепции послужила экосистема [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
+**Вдохновением при создании концепции послужила экосистема [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fresh-go-stores-closing-expanding-whole-foods).**
 
 Retail-focused computer vision MVP project.
 
@@ -34,9 +34,7 @@ The goal is to optimize the interaction between management and analytics for med
 
 Одной из задач данного проекта является разработка работающего прототипа устройства (MVP) для проверки ключевых гипотез, в связи с чем строгое следование стандартам проектирования на данном этапе не предусмотрено.
 
-## Описание (Description)
-
-### Описание системы
+## Описание системы
 
 Архитектурно система состоит из удаленного сервера и устройства для подсчета посетителей. Последнее фиксирует количество вошедших посетителей, получает данные от касс заведений о закрытых чеках, агрегирует эти сведения и отправляет их на сервер.
 Подключение устройства к кассам и сети Интернет осуществляется по проводному интерфейсу с использованием протокола `HTTPS`. Располагается устройство у входа в заведение и предназначено для подсчета вошедших и вышедших посетителей (+1/-1).
@@ -45,9 +43,15 @@ The goal is to optimize the interaction between management and analytics for med
 
 **Архитектура:** `«Камера с ИИ-чипом + Web-сервер на борту + Llama.cpp на сервере + Telegram-бот»`
 
-### Описание устройства
+## Описание устройства
 
 Устройство представляет собой компактный вычислитель с камерой, предназначенный для подсчета посетителей, сбора данных с касс заведений, их агрегации, обработки и последующей отправки на удаленный сервер. Устройство имеет один порт PoE Ethernet (RJ45).
+
+## Железо (Hardware)
+
+* **Основной вычислитель:** [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5)
+* **ИИ ускоритель:** [Hailo-8l](https://www.raspberrypi.com/products/ai-hat)
+* **Камера:** []()
 
 ## Зависимости
 
@@ -57,12 +61,6 @@ The goal is to optimize the interaction between management and analytics for med
 * **Python:** Python3
 * **OpenCV:** Для захвата видео (Версия 4).
 * **Система сборки:** CMake (Версия 3.10).
-
-## Железо (Hardware)
-
-* **Основной вычислитель:** [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5)
-* **ИИ ускоритель:** [Hailo-8l](https://www.raspberrypi.com/products/ai-hat)
-* **Камера:** []()
 
 ## Результат
 
@@ -79,18 +77,12 @@ The goal is to optimize the interaction between management and analytics for med
 **Пример лога при успешном запуске пайплайна счетчика клиентов:**
 
 ```text
-[ИНФО] [Pipeline] Инициализация C++ ядра...
-[ИНФО] [Inference Engine] Загрузка TensorRT движка: ../../../models/yolo26s.engine
-[ИНФО] [Inference Engine] Имя входа: images
-[ИНФО] [Inference Engine] Имя выхода: output0
-[ИНФО] [Inference Engine] Запуск десериализации движка...
-[ИНФО] [Inference Engine] Размер файла движка: 219626764 байт.
 
 ```
 
 ## Техническое описание
 
-Для обнаружения объектов применяется предобученная модель [YOLO26s](https://huggingface.co/Ultralytics/YOLO26).
+Для обнаружения объектов применяется предобученная модель [YOLO26n]().
 
 Устройство с периодичностью 5 минут в формате JSON производит отправку агрегированных данных на удаленный сервер.
 
@@ -108,7 +100,7 @@ The goal is to optimize the interaction between management and analytics for med
     "data": {
         "visitors_in": 1,
         "visitors_out": 1,
-        "receipts_count": 0,
+        "receipts_count": 1,
         "total_revenue": 5000.0
     },
     "diagnostic": {
@@ -129,7 +121,7 @@ The goal is to optimize the interaction between management and analytics for med
 **Формат данных записываемых при закрытии чека:**
 
 ```json
-{"timestamp": "2026-10-21T09::00.00Z", "receipt_id": 0, "total_revenue": 0.0}
+{"timestamp": "2026-10-21T09:00:00Z", "receipt_id": 0, "total_revenue": 0.0}
 ```
 **Ключевые параметры:**
 
@@ -151,7 +143,7 @@ curl -X POST "http://X.X.X.X:X/receipts" \
 **Формат данных записываемых счетчиком клиентов:**
 
 ```json
-{"timestamp": "2026-10-22T09:16:39.00.00Z", "visitors_in": 0, "visitors_out": 0}
+{"timestamp": "2026-10-21T09:00:00Z", "visitors_in": 0, "visitors_out": 0}
 ```
 
 **Ключевые параметры:**
