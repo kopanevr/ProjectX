@@ -80,6 +80,18 @@ private:
   /// @return
   bool configureDevice();
 
+  /// @brief
+  /// @return
+  bool createInputVstreams();
+
+  /// @brief
+  /// @return
+  bool createOutputVstreams();
+
+  /// @brief
+  /// @return
+  bool activateNetwork();
+
 private:
   /// @brief
   std::string inputName_;
@@ -93,7 +105,15 @@ private:
   std::unique_ptr<hailort::Hef> hef_;
 
   /// @brief
-  hailort::ConfiguredNetworkGroupVector configuredNetworkGroup_;
+  std::shared_ptr<hailort::ConfiguredNetworkGroup> configuredNetworkGroup_;
+
+  /// @brief
+  std::unique_ptr<hailort::InputVStream> inputVStream_;
+  /// @brief
+  std::unique_ptr<hailort::OutputVStream> outputVStream_;
+
+  /// @brief
+  std::unique_ptr<hailort::ActivatedNetworkGroup> activatedNetworkGroup_;
 
   /// @brief
   void *deviceInput_{nullptr};
