@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Запуск конвейера.
-  if (!pipeline->start("../../../models/yolo26s.engine", "images", "output0")) {
+  if (!pipeline->start("../../../models/.hef", "images", "output0")) {
     return EXIT_FAILURE;
   }
 

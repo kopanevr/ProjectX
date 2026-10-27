@@ -7,13 +7,17 @@ file(
 add_executable(core ${SOURCES})
 
 # Опции.
-option(USE_HAILO "Отладка." OFF)
+option(USE_HAILO "Отладка." ON)
 
 if (USE_HAILO)
   target_compile_definitions(core PRIVATE USE_HAILO)
 endif()
 
 find_package(OpenCV 4 REQUIRED)
+
+if (USE_HAILO)
+  find_library(HAILORT_LIB hailort REQUIRED)
+endif()
 
 target_include_directories(
   core PRIVATE
@@ -34,10 +38,13 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/LogWriter/include
 
   ${CMAKE_SOURCE_DIR}/Utilities/TimerManager/include
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/thirdParty/hailort-5.4.0/hailort/libhailort/include/hailo
 )
 
 target_link_libraries(core PRIVATE
   ${OpenCV_LIBS}
+  ${HAILORT_LIB}
 )
 
 add_custom_command(

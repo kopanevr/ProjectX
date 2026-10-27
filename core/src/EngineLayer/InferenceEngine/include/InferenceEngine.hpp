@@ -20,6 +20,10 @@
 
 //
 
+#include "hailo/hailort.hpp"
+
+//
+
 /// @brief
 class IInferenceEngine {
 public:
@@ -60,13 +64,20 @@ public:
   /// @return
   bool run(const FrameData &data, std::vector<BoundingBox> &boxes) override;
 
+
 private:
+  /// @brief
+  /// @return
+  bool createDevice();
 
 private:
   /// @brief
   std::string inputName_;
   /// @brief
   std::string outputName_;
+
+  /// @brief
+  std::unique_ptr<hailort::Device> device_;
 
   /// @brief
   void *deviceInput_{nullptr};
