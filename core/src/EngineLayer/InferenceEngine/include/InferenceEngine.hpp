@@ -64,11 +64,19 @@ public:
   /// @return
   bool run(const FrameData &data, std::vector<BoundingBox> &boxes) override;
 
-
 private:
   /// @brief
   /// @return
   bool createDevice();
+
+  /// @brief
+  /// @param fileName Имя файла.
+  /// @return
+  bool loadModel(const std::string &fileName);
+
+  /// @brief
+  /// @return
+  bool configureDevice();
 
 private:
   /// @brief
@@ -78,6 +86,12 @@ private:
 
   /// @brief
   std::unique_ptr<hailort::Device> device_;
+
+  /// @brief
+  hailort::Hef hef_;
+
+  /// @brief
+  hailort::ConfiguredNetworkGroupVector configuredNetworkGroup_;
 
   /// @brief
   void *deviceInput_{nullptr};
