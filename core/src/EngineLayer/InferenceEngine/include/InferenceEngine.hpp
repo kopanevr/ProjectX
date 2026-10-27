@@ -96,6 +96,10 @@ private:
   /// @return
   void prepareBuffers();
 
+  /// @brief
+  /// @return
+  void prepareOutputData(std::vector<BoundingBox> &boxes);
+
 private:
   /// @brief
   std::string inputName_;
@@ -120,20 +124,11 @@ private:
   std::unique_ptr<hailort::ActivatedNetworkGroup> activatedNetworkGroup_;
 
   /// @brief
-  hailort::MemoryView memoryView_;
-
-  /// @brief
   void *deviceInput_{nullptr};
   /// @brief
   void *deviceOutput_{nullptr};
 
   /// @brief
-  std::vector<uint8_t> inputData_;
-  /// @brief
   std::vector<float> outputData_;
-
-
-  /// @brief
-  FrameDisplayData displayData_();
 
 };

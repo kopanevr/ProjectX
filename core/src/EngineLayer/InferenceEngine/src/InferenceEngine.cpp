@@ -164,11 +164,21 @@ bool InferenceEngine::activateNetwork() {
 
   return true;
 }
+
 /// @brief
 /// @return
 void InferenceEngine::prepareBuffers() {
-  inputData_.resize(inputVStream_->get_frame_size());
   outputData_.resize(outputVStream_->get_frame_size() / sizeof(float));
+}
+
+/// @brief
+/// @return
+void InferenceEngine::prepareOutputData(std::vector<BoundingBox> &boxes) {
+  const BoundingBox *boundingBoxes = reinterpret_cast<const BoundingBox *>(outputData_.data());
+
+  for (size_t i = 0; i < Config::numElements; i++) {
+    boxes.push_back(boundingBoxes[i]);
+  }
 }
 
 /// @brief Вывод.
@@ -181,10 +191,13 @@ bool InferenceEngine::run(const FrameData &data, std::vector<BoundingBox> &boxes
     return false;
   }
 
-  outputVStream_->read(hailort::MemoryView(outputData_.data(), outputData_.size()));
+  status = outputVStream_->read(hailort::MemoryView(outputData_.data(), outputData_.size()));
   if (status != HAILO_SUCCESS) {
     return false;
   }
+
+  //
+  prepareOutputData(boxes);
 
   return true;
 }

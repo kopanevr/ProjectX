@@ -61,10 +61,12 @@ The goal is to optimize the interaction between management and analytics for med
 
 |  |  |
 | :--: | :--: |
-| **Вариант 1 концепта законченного устройства - [Источник]()** |**Вариант 2 законченного концепта устройства - [Источник]()** |
-| ![2](/doc/images/.jpg) | ![3](/doc/images/.jpg) |
+| **Вариант 1 концепта устройства - [Источник]()** |**Вариант 2 концепта устройства - [Источник]()** |
+| ![2](/doc/images/concept_15.jpeg) | ![3](/doc/images/concept_21.jpeg) |
+| **Вариант 3 концепта устройства - [Источник]()** |**Вариант 4 концепта устройства - [Источник]()** |
+| ![2](/doc/images/concept_23.jpeg) | ![3](/doc/images/concept_30.jpeg) |
 
-*(Пока на этапе проработки. Сгенерированные ИИ концепты возможно посмотреть в директории [doc/images](doc/images).)*
+*(Пока на этапе проработки. Дополнительные **ИИ-концепты** устройства возможно посмотреть в директории [doc/images](doc/images).)*
 
 Питание устройства осуществляется через порт (PoE) Ethernet (RJ45). *(Один кабель для передачи данных и для питания устройства.)*
 
@@ -75,7 +77,6 @@ The goal is to optimize the interaction between management and analytics for med
 * **Камера:** []()
 
 |  |  |
-| :--: | :--: |
 | :--: | :--: |
 | **Модуль Hailo-8l и плата расширения M.2 - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |**Raspberry Pi и плата расширения M.2 с модулем Hailo-8l - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |
 | ![2](/doc/images/2.jpg) | ![3](/doc/images/3.jpg) |
