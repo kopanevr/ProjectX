@@ -48,6 +48,8 @@ bool InferenceEngine::initialize(const std::string &fileName, const std::string 
     return false;
   }
   INFO(layerName_, " ", "Сеть успешно активирована!");
+
+  prepareBuffers();
 #endif
 
   return true;
@@ -130,7 +132,7 @@ bool InferenceEngine::createOutputVstreams() {
   auto outputVirtualStreamParams = configuredNetworkGroup_->make_output_vstream_params(
     false,
     HAILO_FORMAT_TYPE_FLOAT32,
-    HAILO_DEFAULT_VSTREAM_TIMEOUT_MS, // Время записи в поток.
+    HAILO_DEFAULT_VSTREAM_TIMEOUT_MS,
     HAILO_DEFAULT_VSTREAM_QUEUE_SIZE
   );
   if (!outputVirtualStreamParams) {
@@ -162,11 +164,27 @@ bool InferenceEngine::activateNetwork() {
 
   return true;
 }
+/// @brief
+/// @return
+void InferenceEngine::prepareBuffers() {
+  inputData_.resize(inputVStream_->get_frame_size());
+  outputData_.resize(outputVStream_->get_frame_size() / sizeof(float));
+}
 
 /// @brief Вывод.
 /// @param data
 /// @param boxes
 /// @return
 bool InferenceEngine::run(const FrameData &data, std::vector<BoundingBox> &boxes) {
+  auto status = inputVStream_->write(hailort::MemoryView(static_cast<void *>(data.data.data), data.data.total() * data.data.elemSize()));
+  if (status != HAILO_SUCCESS) {
+    return false;
+  }
+
+  outputVStream_->read(hailort::MemoryView(outputData_.data(), outputData_.size()));
+  if (status != HAILO_SUCCESS) {
+    return false;
+  }
+
   return true;
 }
