@@ -68,7 +68,7 @@ bool InferenceEngine::loadModel(const std::string &fileName) {
     return false;
   }
 
-  hef_  = std::move(hef.value());
+  hef_ = std::unique_ptr<hailort::Hef>(new (std::nothrow) hailort::Hef(std::move(hef.value())));
 
   return true;
 }
@@ -76,8 +76,8 @@ bool InferenceEngine::loadModel(const std::string &fileName) {
 /// @brief
 /// @return
 bool InferenceEngine::configureDevice() {
-  auto networkGroupsParams = device_->create_configure_params(hef_);
-  auto configuredNetworkGroup = device_->configure(hef_, networkGroupsParams.value());
+  auto networkGroupsParams = device_->create_configure_params(*hef_);
+  auto configuredNetworkGroup = device_->configure(*hef_, networkGroupsParams.value());
   if (!configuredNetworkGroup) {
     ERROR(layerName_, " ", "Ошибка конфигурации устройства: ", configuredNetworkGroup.status());
     return false;

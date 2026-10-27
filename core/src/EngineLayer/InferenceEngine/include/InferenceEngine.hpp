@@ -51,6 +51,8 @@ private:
 /// @brief
 class InferenceEngine final : public IInferenceEngine {
 public:
+  /// @brief Конструктор.
+  InferenceEngine() = default;
   /// @brief Деструктор.
   ~InferenceEngine() = default;
 
@@ -88,7 +90,7 @@ private:
   std::unique_ptr<hailort::Device> device_;
 
   /// @brief
-  hailort::Hef hef_;
+  std::unique_ptr<hailort::Hef> hef_;
 
   /// @brief
   hailort::ConfiguredNetworkGroupVector configuredNetworkGroup_;
