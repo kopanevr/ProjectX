@@ -21,7 +21,9 @@ Inspired by [Amazon Go](https://www.aboutamazon.com/news/company-news/amazon-fre
 
 ## Цель (Goal)
 
-Простая аналитика для среднего бизнеса. Менеджмент следит через Telegram бот за метриками в реальном времени, получает прогнозы и важные уведомления. Система собирает регулярные дайджесты и понятно предоставляет простые ответы на любые вопросы по показателям.
+Простая аналитика для среднего бизнеса. Менеджмент следит через Telegram-бот за метриками в реальном времени, получает прогнозы и важные уведомления. Система собирает регулярные дайджесты и понятно предоставляет простые ответы пользователю на любые вопросы по показателям.
+
+Simple analytics for medium businesses. Management tracks real-time metrics, receives forecasts, and gets critical notifications via a Telegram bot.
 
 The goal is to optimize the interaction between management and analytics for medium businesses, enabling real-time data tracking of key metrics and predictions based on received metric data.
 
@@ -39,11 +41,13 @@ The goal is to optimize the interaction between management and analytics for med
 >
 > **Пример дайджеста:** «Итоги недели: Конверсия составила 15.5%. +1.5% к прошлой неделе. Самый эффективный день — четверг. Акция на ... сработала отлично! Рекомендую ...»
 
+> **Digest example:** «Weekly summary: Conversion rate was 15.5%. +1.5% compared to last week. The best day was Thursday. The promo on ... worked great! I recommend ...»
+
 *Вышепредставленные примеры показывают всего лишь направление мысли, а не итог работы системы.*
 
 ## Задачи
 
-Одной из задач данного проекта является разработка работающего прототипа устройства (MVP) для проверки ключевых гипотез.
+**Одной из задач данного проекта является разработка работающего прототипа устройства (MVP) для проверки ключевых гипотез.**
 
 > [!WARNING]
 > В связи с чем строгое следование стандартам проектирования на данном этапе не предусмотрено.
@@ -53,7 +57,7 @@ The goal is to optimize the interaction between management and analytics for med
 Архитектурно система состоит из удаленного сервера и устройства для подсчета клиентов. Последнее фиксирует количество вошедших клиентов, получает данные от касс заведений о закрытых чеках, агрегирует эти сведения и отправляет их на сервер.
 Подключение устройства к кассам и сети Интернет осуществляется по проводному интерфейсу с использованием протокола `HTTPS`. Располагается устройство у входа в заведение и предназначено для подсчета вошедших и вышедших клиентов (+1/-1).
 
-**Архитектуру системы можно представить как:** «Камера с ИИ + Web-сервер + Llama.cpp на удаленном сервере + Telegram-бот»`
+**Архитектуру системы можно представить как:** `«Камера с ИИ + Web-сервер + Llama.cpp на удаленном сервере + Telegram-бот»`
 
 ## Описание устройства
 
@@ -77,7 +81,7 @@ The goal is to optimize the interaction between management and analytics for med
 Для создания прототипа устройства (MVP) и отладки встраиваемого ПО используется:
 
 * **Основной вычислитель:** [Raspberry Pi 5](https://www.raspberrypi.com/products/raspberry-pi-5) для обработки видео потока, развертывания Web-сервера, агрегации данных.
-* **ИИ ускоритель (NPU):** [Hailo-8l](https://www.raspberrypi.com/products/ai-hat) для ускорения вывода модели, используемой в задаче подсчета посетителей.
+* **ИИ ускоритель (NPU):** [Hailo-8l](https://www.raspberrypi.com/products/ai-hat) для ускорения вывода модели, используемой в задаче подсчета клиентов.
 * **Камера:** []()
 
 |  |  |
@@ -117,7 +121,7 @@ The goal is to optimize the interaction between management and analytics for med
 
 ## Техническое описание
 
-Для обнаружения объектов применяется предобученная модель [YOLO26n](https://huggingface.co/Ultralytics/YOLO26) от Ultralytics. Модель возможно использовать из директории [models](models).
+Для обнаружения объектов применяется предобученная модель [YOLO26n](https://huggingface.co/Ultralytics/YOLO26) от Ultralytics. Предобученную модель возможно использовать из директории [models](models).
 
 Устройство с периодичностью 5 минут в формате JSON производит отправку агрегированных данных на удаленный сервер.
 
