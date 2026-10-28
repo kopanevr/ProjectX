@@ -62,10 +62,11 @@ The goal is to optimize the interaction between management and analytics for med
 |  |  |
 | :--: | :--: |
 | **Вариант 1 - Концепт устройства - [Источник]()** |**Вариант 2 - Концепт устройства - [Источник]()** |
-| ![2](/doc/images/concept_15.jpeg) | ![3](/doc/images/concept_21.jpeg) |
+| ![2](/doc/images/concept_15.jpeg) | ![3](/doc/images/concept_20.jpeg) |
 | **Вариант 3 - Концепт устройства - [Источник]()** |**Вариант 4 - Концепт устройства - [Источник]()** |
-| ![2](/doc/images/concept_24.jpeg) | ![3](/doc/images/concept_30.jpeg) |
-
+| ![2](/doc/images/concept_21.jpeg) | ![3](/doc/images/concept_24.jpeg) |
+| **Вариант 5 - Концепт устройства - [Источник]()** |**Вариант 6 - Концепт устройства - [Источник]()** |
+| ![2](/doc/images/concept_30.jpeg) | ![3](/doc/images/concept_38.jpeg) |
 *(Пока на этапе проработки. Дополнительные ИИ-концепты устройства возможно посмотреть в директории [doc/images](doc/images).)*
 
 Питание устройства осуществляется через порт (PoE) Ethernet (RJ45). *(Один кабель для передачи данных и для питания устройства.)*

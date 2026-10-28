@@ -2,7 +2,7 @@ path: /home/superadmin/Desktop/ProjectX/temp/dataset
 
 train: images/train
 val: images/val
-test:
+test: images/test
 
 names:
   0: person
