@@ -35,6 +35,8 @@ target_include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer
   ${CMAKE_CURRENT_SOURCE_DIR}/PipelineLayer/Pipeline/include
 
+  ${CMAKE_CURRENT_SOURCE_DIR}/FlowCounter/include
+
   ${CMAKE_CURRENT_SOURCE_DIR}/LogWriter/include
 
   ${CMAKE_SOURCE_DIR}/Utilities/TimerManager/include
