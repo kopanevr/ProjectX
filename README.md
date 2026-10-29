@@ -223,6 +223,4 @@ curl -X POST "http://X.X.X.X:X/receipts" \
 
 ##
 
-|  |
-| :--: |
-| ![1](/doc/images/logo.png) |
+![1](/doc/images/logo.png)
