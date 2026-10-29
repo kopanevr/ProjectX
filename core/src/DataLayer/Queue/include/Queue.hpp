@@ -27,7 +27,7 @@ public:
   void push(T data) {
     std::unique_lock<std::mutex> lock(mutex_);
     // Удаление первого элемента.
-    if (queue_.size() >= max) {
+    if (queue_.size() >= MAX) {
       queue_.pop();
     }
     queue_.push(std::move(data));
@@ -56,6 +56,6 @@ private:
   std::condition_variable_any cv_;
 
   /// @brief
-  const std::size_t max = 16u;
+  static inline const std::size_t MAX = 16u;
 
 };
