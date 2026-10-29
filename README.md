@@ -103,7 +103,7 @@ graph TD;
 | :--: | :--: |
 | **Модуль Hailo-8l и плата расширения M.2 - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |**Raspberry Pi и плата расширения M.2 с модулем Hailo-8l - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |
 | ![8](/doc/images/2.jpg) | ![9](/doc/images/3.jpg) |
-| **Модуль Hailo-8l - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |**Raspberry Pi Camera Module 3 - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |
+| **Модуль Hailo-8l - [Источник](https://www.raspberrypi.com/news/raspberry-pi-ai-kit-available-now-at-70)** |**Raspberry Pi Camera Module 3 - [Источник](https://www.raspberrypi.com/products/camera-module-3)** |
 | ![10](/doc/images/4.jpg) | ![11](/doc/images/5.jpg) |
 
 ## Зависимости
