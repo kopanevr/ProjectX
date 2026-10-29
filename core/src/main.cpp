@@ -31,9 +31,13 @@
 /// @param argv
 /// @return
 int main(int argc, char *argv[]) {
+  auto inferenceEngine = std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine());
+  auto logWriter = std::unique_ptr<LogWriter>(new (std::nothrow) LogWriter());
+
   const auto pipeline = std::unique_ptr<Pipeline>(new (std::nothrow) Pipeline(
-      std::unique_ptr<InferenceEngine>(new (std::nothrow) InferenceEngine()),
-      std::unique_ptr<LogWriter>(new (std::nothrow) LogWriter())));
+      std::move(inferenceEngine),
+      std::move(logWriter)
+    ));
   if (!pipeline) {
     return EXIT_FAILURE;
   }

@@ -8,6 +8,11 @@
 //
 
 #include <string>
+#include <filesystem>
+
+//
+
+#include "Data.hpp"
 
 //
 
@@ -21,7 +26,13 @@ public:
   /// @return Результат инициализации.
   virtual bool initialize() = 0;
 
+  /// @brief
+  /// @param log
+  virtual void run(const Log &log) = 0;
+
 protected:
+  /// @brief
+  const std::string layerName_ = "[LogWriter]";
 
 private:
 
@@ -39,8 +50,15 @@ public:
     return true;
   }
 
+  /// @brief
+  /// @param log
+  void run(const Log &log) override;
+
 protected:
 
 private:
+  static inline const std::filesystem::path LOG_FILE_DIR = "/tmp/blueberry_logs";
+  static inline const std::filesystem::path LOG_FILE_PATH = LOG_FILE_DIR / "customer_counter_raw.blueberry_retail.log";
+  static inline const std::filesystem::path TEMP_LOG_FILE_PATH = std::filesystem::path(LOG_FILE_PATH) += ".tmp";
 
 };

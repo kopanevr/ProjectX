@@ -3,12 +3,6 @@
 //
 
 #include <string>
-#include <chrono>
-#include <format>
-#include <fstream>
-#include <filesystem>
-#include <stop_token>
-#include <condition_variable>
 
 //
 
@@ -237,20 +231,11 @@ void Pipeline::inferenceWorker(std::stop_token stoken) {
 /// @brief Поток записи логов.
 /// @param
 void Pipeline::logWriterWorker(std::stop_token stoken) {
-  const std::filesystem::path LOG_FILE_DIR = "/tmp/blueberry_logs";
-  const std::filesystem::path LOG_FILE_PATH = LOG_FILE_DIR / "customer_counter_raw.blueberry_retail.log";
-  const std::filesystem::path TEMP_LOG_FILE_PATH = std::filesystem::path(LOG_FILE_PATH) += ".tmp";
-
-  const auto PERIOD = std::chrono::minutes(1); // 1 МИН
-
-  size_t visitors_in{};
-  size_t visitors_out{};
+  Log log{};
 
   std::condition_variable_any cv{};
 
-  if (!std::filesystem::create_directories(LOG_FILE_DIR)) {
-    //
-  }
+  const auto PERIOD = std::chrono::minutes(1); // 1 МИН
 
   while(!stoken.stop_requested()) {
     // Получение данных.
@@ -258,41 +243,10 @@ void Pipeline::logWriterWorker(std::stop_token stoken) {
       std::unique_lock<std::mutex> lock(mutex_);
       cv.wait_for(lock, stoken, PERIOD, [&]() -> bool { return stoken.stop_requested(); });
 
-      visitors_in = log_.visitors_in;
-      visitors_out = log_.visitors_out;
+      log.visitors_in = log_.visitors_in;
+      log.visitors_out = log_.visitors_out;
     }
 
-    const auto now = std::chrono::system_clock::now();
-    const auto iso_string = std::format("{:%FT%T%z}", now);
-
-    const auto payload = std::format(
-      R"({{"timestamp": "{}", "visitors_in": {}, "visitors_out": {}}})",
-      iso_string,
-      visitors_in,
-      visitors_out
-    ) + "\n";
-
-    std::error_code err{};
-
-    if (std::filesystem::exists(LOG_FILE_PATH)) {
-      std::filesystem::copy_file(
-        LOG_FILE_PATH,
-        TEMP_LOG_FILE_PATH,
-        std::filesystem::copy_options::overwrite_existing,
-        err
-      );
-    }
-
-    // Запись в файл.
-    {
-      std::ofstream file(TEMP_LOG_FILE_PATH, std::ios::app);
-      if (file.is_open()) {
-        file.write(payload.data(), payload.size());
-      } else {
-        ERROR(layerName_, " ", "Не удалось записать лог в файл!");
-      }
-    }
-
-    std::filesystem::rename(TEMP_LOG_FILE_PATH, LOG_FILE_PATH, err);
+    logWriter_->run(log);
   }
 }

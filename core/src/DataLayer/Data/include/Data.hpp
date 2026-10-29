@@ -25,21 +25,24 @@
 
 /// @brief
 struct FrameData {
-/// @brief Индекс.
-long long index;
-/// @brief Данные.
-cv::Mat data;
+  /// @brief Индекс.
+  long long index;
+  /// @brief Данные.
+  cv::Mat data;
 };
 
 /// @brief
 struct FrameDisplayData {
-/// @brief
-FrameDisplayData() {
-  boxes.resize(Config::numElements);
-}
+  /// @brief
+  FrameDisplayData() { boxes.resize(Config::numElements); }
 
-/// @brief
-FrameData data;
-/// @brief
-std::vector<BoundingBox> boxes;
+  /// @brief
+  FrameData data;
+  /// @brief
+  std::vector<BoundingBox> boxes;
+};
+
+struct Log {
+  size_t visitors_in;
+  size_t visitors_out;
 };

@@ -98,9 +98,6 @@ private:
   std::mutex mutex_;
 
   /// @brief
-  struct {
-    size_t visitors_in{};
-    size_t visitors_out{};
-  } log_;
+  Log log_;
 
 };
