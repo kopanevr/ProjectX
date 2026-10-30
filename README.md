@@ -1,8 +1,8 @@
-# AN AI RETAIL PLATFORM FOR OFFLINE STORE CONVERSION ANALYSIS
+# AI RETAIL PLATFORM FOR OFFLINE STORE CONVERSION ANALYSIS
 
 **ИИ-платформа для ритейла, объединяющая компьютерное зрение и локальные языковые модели для мгновенного анализа конверсии точек среднего бизнеса.**
 
-**An AI retail platform combining CV and LLMs for offline store conversion analysis.**
+**AI retail platform combining CV and LLMs for offline store conversion analysis.**
 
 Менеджмент и владельцы точек следят за метриками в реальном времени, получают прогнозы и уведомления об аномалиях через удобный Telegram-бот. Система автоматически собирает регулярные дайджесты и предоставляет простые ответы на любые аналитические вопросы пользователя на человеческом языке.
 
